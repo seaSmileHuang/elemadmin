@@ -62,15 +62,13 @@
 
 <script setup lang="ts">
 import MenuApi, { IMenuItem, IQueyMenusListParams } from "@/api/menu";
+import { ModeEnum } from "@/type";
 import { asyncify } from "@/utils/extractData";
 import { ElButton, ElMessage } from "element-plus";
 import { ref, watch } from "vue";
 import AddMenuModal from "./components/AddMenuModal.vue";
 import OperationBtn from "./components/OperationBtn.vue";
-enum ModeEnum {
-  ADD = "ADD",
-  EDIT = "EDIT"
-}
+
 
 const getMenus = (tree:IMenuItem, _treeNode:unknown, resolve: (data:IMenuItem[]) => void) => {
 	const params = {pid: tree.id}

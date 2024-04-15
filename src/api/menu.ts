@@ -51,7 +51,7 @@ export default {
 			}
 		})
 	},
-	lazyGetMenu(id: string) {
+	lazyGetMenu(id: string | number) {
 		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menus/lazy", {
 			params: {
 				pid:id

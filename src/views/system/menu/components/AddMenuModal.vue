@@ -1,0 +1,138 @@
+<template>
+	  <!--表单渲染-->
+		<el-dialog append-to-body :close-on-click-modal="false" :model-value="props.visible" title="新增菜单" width="580px">
+      <el-form ref="formRef" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
+        <el-form-item label="菜单类型" prop="type">
+          <el-radio-group v-model="form.type" size="mini" style="width: 178px">
+            <el-radio-button label="0">目录</el-radio-button>
+            <el-radio-button label="1">菜单</el-radio-button>
+            <el-radio-button label="2">按钮</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-show="form.type.toString() !== '2'" label="菜单图标" prop="icon">
+          <!-- <el-popover
+            placement="bottom-start"
+            width="450"
+            trigger="click"
+            @show="$refs['iconSelect'].reset()"
+          >
+            <IconSelect ref="iconSelect" @selected="selected" />
+            <el-input slot="reference" v-model="form.icon" style="width: 450px;" placeholder="点击选择图标" readonly>
+              <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" class="el-input__icon" style="height: 32px;width: 16px;" />
+              <i v-else slot="prefix" class="el-icon-search el-input__icon" />
+            </el-input>
+          </el-popover> -->
+        </el-form-item>
+        <el-form-item v-show="form.type.toString() !== '2'" label="外链菜单" prop="iFrame">
+          <el-radio-group v-model="form.iFrame" size="mini">
+            <el-radio-button label="true">是</el-radio-button>
+            <el-radio-button label="false">否</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-show="form.type.toString() === '1'" label="菜单缓存" prop="cache">
+          <el-radio-group v-model="form.cache" size="mini">
+            <el-radio-button label="true">是</el-radio-button>
+            <el-radio-button label="false">否</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-show="form.type.toString() !== '2'" label="菜单可见" prop="hidden">
+          <el-radio-group v-model="form.hidden" size="mini">
+            <el-radio-button label="false">是</el-radio-button>
+            <el-radio-button label="true">否</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="form.type.toString() !== '2'" label="菜单标题" prop="title">
+          <el-input v-model="form.title" :style=" form.type.toString() === '0' ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
+        </el-form-item>
+        <el-form-item v-if="form.type.toString() === '2'" label="按钮名称" prop="title">
+          <el-input v-model="form.title" placeholder="按钮名称" style="width: 178px;" />
+        </el-form-item>
+        <el-form-item v-show="form.type.toString() !== '0'" label="权限标识" prop="permission">
+          <el-input v-model="form.permission" :disabled="form.iFrame.toString() === 'true'" placeholder="权限标识" style="width: 178px;" />
+        </el-form-item>
+        <el-form-item v-if="form.type.toString() !== '2'" label="路由地址" prop="path">
+          <el-input v-model="form.path" placeholder="路由地址" style="width: 178px;" />
+        </el-form-item>
+        <el-form-item label="菜单排序" prop="menuSort">
+          <el-input-number v-model.number="form.menuSort" :min="0" :max="999" controls-position="right" style="width: 178px;" />
+        </el-form-item>
+        <el-form-item v-show="form.iFrame.toString() !== 'true' && form.type.toString() === '1'" label="组件名称" prop="componentName">
+          <el-input v-model="form.componentName" style="width: 178px;" placeholder="匹配组件内Name字段" />
+        </el-form-item>
+        <el-form-item v-show="form.iFrame.toString() !== 'true' && form.type.toString() === '1'" label="组件路径" prop="component">
+          <el-input v-model="form.component" style="width: 178px;" placeholder="组件路径" />
+        </el-form-item>
+
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="onCancel">Cancel</el-button>
+          <el-button type="primary" @click="onConfirm">
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
+</template>
+<script setup lang="ts">
+import MenuApi, { IMenuItem } from "@/api/menu";
+import { ElMessage } from "element-plus";
+import { ref, watch } from 'vue';
+const emits = defineEmits(["update:visible", "onConfirm"])
+const formRef = ref()
+
+const props = defineProps({
+  formValue: {
+		type: Object,
+    default: () => ({
+      type: 1,
+      hidden: false,
+      iFrame: false
+    })
+	},
+  mode: {
+    type: String,
+    validator: (value: string) => {
+      const modeValues = ["ADD", "EDIT"]
+      return modeValues.includes(value)
+    },
+    default: "ADD"
+  },
+  visible: {
+    type: Boolean,
+    default: false,
+  }
+})
+const form = ref<IMenuItem>({})
+const rules: any[] = []
+watch(props.formValue, (newValue) => {
+  console.log("newValue", newValue)
+  form.value = newValue.value || {
+      type: 1,
+      hidden: false,
+      iFrame: false
+    }
+}, {
+  immediate:true
+})
+
+const onCancel = () => {
+  emits("update:visible", false)
+}
+const onConfirm = async () => {
+  try {
+    // 新增
+    if (props.mode === "ADD") {
+      await MenuApi.addMenu(form.value)
+    } else {
+      // 编辑
+      await MenuApi.editMenu(form.value)
+    }
+    emits("onConfirm")
+  } catch(err) {
+    ElMessage.error((err as Error)?.message || "请求接口失败")
+  }
+
+  
+}
+</script>

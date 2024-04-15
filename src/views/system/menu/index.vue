@@ -1,10 +1,11 @@
 <template>
 	<div>
+    <div class="head-wrapper">
+      <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+      <date-range-picker v-model="query.createTime" class="date-item" />
+    </div>
     <operation-btn :operations="operations"/>
 
-    <el-tree-select v-model="depart" lazy :load="load" :multiple="true" :filterable="true">
-
-    </el-tree-select >
     <add-menu-modal v-model:visible="isShowAddMenu" :formValue="formValue" :mode="mode" @onConfirm="getAllMenus"/>
     <!--表格渲染-->
     <el-table
@@ -60,16 +61,17 @@
 </template>
 
 <script setup lang="ts">
-import MenuApi, { IMenuItem } from "@/api/menu";
+import MenuApi, { IMenuItem, IQueyMenusListParams } from "@/api/menu";
 import { asyncify } from "@/utils/extractData";
 import { ElButton, ElMessage } from "element-plus";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import AddMenuModal from "./components/AddMenuModal.vue";
 import OperationBtn from "./components/OperationBtn.vue";
 enum ModeEnum {
   ADD = "ADD",
   EDIT = "EDIT"
 }
+
 const getMenus = (tree:IMenuItem, _treeNode:unknown, resolve: (data:IMenuItem[]) => void) => {
 	const params = {pid: tree.id}
 	setTimeout(() => {
@@ -83,10 +85,10 @@ const getMenus = (tree:IMenuItem, _treeNode:unknown, resolve: (data:IMenuItem[])
 const menus = ref<IMenuItem[]>([])
 const listLoding = ref(false)
 const table = ref()
-const getAllMenus = async () => {
+const getAllMenus = async (query?: IQueyMenusListParams) => {
   try {
     listLoding.value = true
-    const res = await asyncify(() => MenuApi.getMenus())()
+    const res = await asyncify(() => MenuApi.getMenus(query))()
     menus.value = res.content || []
   } catch(err) {
     ElMessage.error((err as Error)?.message)
@@ -96,25 +98,14 @@ const getAllMenus = async () => {
 }
 getAllMenus()
 
-
-const depart = ref([])
-let id = 0
-const load = (node: { isLeaf: any; }, resolve: (arg0: ({ value: number; label: string; isLeaf?: undefined; } | { value: number; label: string; isLeaf: boolean; })[]) => void) => {
-  if (node.isLeaf) return resolve([])
-  setTimeout(() => {
-    resolve([
-      {
-        value: ++id,
-        label: `lazy load node${id}`
-      },
-      {
-        value: ++id,
-        label: `lazy load nodes${id}`,
-        isLeaf: true
-      }
-    ])
+const query = ref<IQueyMenusListParams>({
+  pageNum: 1,
+  pageSize: 10
 })
-}
+
+watch(query,(newValue) => {
+  getAllMenus(newValue)
+})
 const operations = ref({
   toAdd() {
     setShowAddMenu(true)
@@ -143,4 +134,5 @@ const onDeleteMenu = async (id: number|string) => {
   }
   
 }
+
 </script>

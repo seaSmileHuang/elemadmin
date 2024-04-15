@@ -4,19 +4,19 @@ import axios, { ResponseRecord } from "./index";
 
 export type IMenuItem = {
 	id: number;
-	cache: boolean;
-	component: string;
-	componentName:string;
-	hasChildren: boolean;
-	hidden: boolean;
-	icon: string;
-	iframe: boolean;
-	label: string;
-	leaf: boolean;
-	menuSort: number;
+	cache?: boolean;
+	component?: string;
+	componentName?:string;
+	hasChildren?: boolean;
+	hidden?: boolean;
+	icon?: string;
+	iframe?: boolean;
+	label?: string;
+	leaf?: boolean;
+	menuSort?: number;
 	path: string;
-	permission: string;
-	pid: number;
+	permission?: string;
+	pid?: number;
 	title: string;
 	type: number;
 }
@@ -24,12 +24,16 @@ export type IMenuListDTO = {
 	content: IMenuItem[],
 	totalElements: number
 }
-type QueyMenusListParams = {
-	pid?: string | number;
-	
+
+export type IQueyMenusListParams = {
+  createTime?: string;
+  blurry?: string;
+  pageNum?:number;
+  pageSize?:number;
+	pid?:number;
 }
 export default {
-	getMenus(params?: QueyMenusListParams) {
+	getMenus(params?: IQueyMenusListParams) {
 		return axios.get<ResponseRecord<IMenuListDTO>>("/api/menus", {
 			params
 		})
@@ -44,6 +48,13 @@ export default {
 		return axios.delete("/api/menus", {
 			data: {
 				ids: [id]
+			}
+		})
+	},
+	lazyGetMenu(id: string) {
+		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menus/lazy", {
+			params: {
+				pid:id
 			}
 		})
 	}

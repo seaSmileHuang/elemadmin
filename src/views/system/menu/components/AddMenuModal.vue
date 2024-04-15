@@ -62,7 +62,10 @@
         <el-form-item v-show="form.iFrame.toString() !== 'true' && form.type.toString() === '1'" label="组件路径" prop="component">
           <el-input v-model="form.component" style="width: 178px;" placeholder="组件路径" />
         </el-form-item>
-
+        <el-form-item label="上级目录" prop="pid">     
+          <el-tree-select v-model="form.pid" lazy :load="load">
+        </el-tree-select >
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -76,6 +79,7 @@
 </template>
 <script setup lang="ts">
 import MenuApi, { IMenuItem } from "@/api/menu";
+import { asyncify } from "@/utils/extractData";
 import { ElMessage } from "element-plus";
 import { ref, watch } from 'vue';
 const emits = defineEmits(["update:visible", "onConfirm"])
@@ -107,7 +111,7 @@ const form = ref<IMenuItem>({})
 const rules: any[] = []
 watch(props.formValue, (newValue) => {
   console.log("newValue", newValue)
-  form.value = newValue.value || {
+  form.value = newValue || {
       type: 1,
       hidden: false,
       iFrame: false
@@ -134,5 +138,12 @@ const onConfirm = async () => {
   }
 
   
+}
+
+const load = (node: { isLeaf: any; id: string; },resolve: (arg0: IMenuItem[]) => void) => {
+  if (node.isLeaf) return resolve([])
+  asyncify(() => MenuApi.lazyGetMenu(node.id))().then((res) => {
+    resolve(res)
+  })
 }
 </script>

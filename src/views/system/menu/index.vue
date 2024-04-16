@@ -1,8 +1,8 @@
 <template>
 	<div>
-    <div class="head-wrapper">
-      <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-      <date-range-picker v-model="query.createTime" class="date-item" />
+    <div class="head-container">
+      <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" />
+      <el-date-picker type="daterange" v-model="query.createTime" class="date-item" range-separator=":"  start-placeholder="开始日期" end-placeholder="结束日期" style="width: 230px"/>
     </div>
     <operation-btn :operations="operations"/>
 
@@ -134,3 +134,13 @@ const onDeleteMenu = async (id: number|string) => {
 }
 
 </script>
+<style rel="stylesheet/scss" lang="scss" scoped>
+ :deep(.el-input-number .el-input__inner) {
+    text-align: left;
+  }
+ :deep(.vue-treeselect__control,::v-deep .vue-treeselect__placeholder,::v-deep .vue-treeselect__single-value) {
+    height: 30px;
+    line-height: 30px;
+  }
+
+</style>

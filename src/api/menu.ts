@@ -10,7 +10,7 @@ export type IMenuItem = {
 	hasChildren?: boolean;
 	hidden?: boolean;
 	icon?: string;
-	iframe?: boolean;
+	iFrame?: boolean;
 	label?: string;
 	leaf?: boolean;
 	menuSort?: number;

@@ -1,13 +1,21 @@
 <template>
+    <div class="head-container">
+      <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" />
+      <el-date-picker type="daterange" v-model="query.createTime" class="date-item" range-separator=":"  start-placeholder="开始日期" end-placeholder="结束日期" style="width: 230px"/>
+    </div>
+    <operation-btn :operations="operations"/>
+    
+    <add-role-modal v-model:visible="isShowAddRole" :formValue="curActiveItem" :mode="mode" @onConfirm="getAllRoles"/>
     <el-row :gutter="15">
       <!--角色管理-->
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
         <el-card class="box-card" shadow="never">
-          <div slot="header" class="clearfix">
+          <template #header>
             <span class="role-span">角色列表</span>
-          </div>
-          <el-table ref="table" v-loading="loading" highlight-current-row style="width: 100%;" :data="roles">
-            <el-table-column :selectable="checkboxT" type="selection" width="55" />
+          </template>
+            
+          <el-table ref="table" v-loading="loading" highlight-current-row style="width: 100%;" :data="roles" @row-click="onTableRowClick">
+            <el-table-column type="selection" width="55" />
             <el-table-column prop="name" label="名称" />
             <el-table-column prop="dataScope" label="数据权限" />
             <el-table-column prop="level" label="角色级别" />
@@ -27,7 +35,7 @@
       <!-- 菜单授权 -->
       <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="7">
         <el-card class="box-card" shadow="never">
-          <div slot="header" class="clearfix">
+          <template #header>
             <el-tooltip class="item" effect="dark" content="选择指定角色分配菜单" placement="top">
               <span class="role-span">菜单分配</span>
             </el-tooltip>
@@ -41,11 +49,11 @@
               type="primary"
               @click="saveRole"
             >保存</el-button>
-          </div>
+          </template>
           <el-tree
             ref="role"
             lazy
-            :default-checked-keys="roleIds"
+            :default-checked-keys="menuIds"
             :load="getMenuData"
             :props="defaultProps"
             check-strictly
@@ -67,12 +75,15 @@ import { ModeEnum } from "@/type";
 import { asyncify } from "@/utils/extractData";
 import { ElMessage } from "element-plus";
 import type Node from 'element-plus/es/components/tree/src/model/node';
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import OperationBtn from "../menu/components/OperationBtn.vue";
+import AddRoleModal from "./components/AddRoleModal.vue";
 const {	pageSize,
 		pageNum,
 		loading,
 		curActiveItem,
-		mode} = usePage()
+    setCurActiveItem,
+		mode} = usePage<IRoleItem>()
 const query = ref<IQueyRolesListParams>({
   pageNum: pageNum.value,
   pageSize: pageSize.value
@@ -86,7 +97,7 @@ watch(query,(newValue) => {
 })
 
 const roles = ref<IRoleItem[]>([])
-const getAllRoles = async (query: IQueyRolesListParams) => {
+const getAllRoles = async (query?: IQueyRolesListParams) => {
   try {
     const res = await asyncify(() => RoleApi.getRoles(query))()
     roles.value = res.content || []
@@ -94,6 +105,8 @@ const getAllRoles = async (query: IQueyRolesListParams) => {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
 }
+getAllRoles()
+
 const operations = ref({
   toAdd() {
     setShowAddRole(true)
@@ -121,7 +134,8 @@ const onDeleteRole = async (id: number|string) => {
 }
 
 const getMenuData = (node: Node, resolve: (data: IMenuItem[]) => void) => {
- asyncify(() => MenuApi.lazyGetMenu(node.id))().then((res) => {
+  let pid = node.level === 1 ? 0 : node.id
+  asyncify(() => MenuApi.lazyGetMenu(pid))().then((res) => {
     resolve(res)
   })
 
@@ -129,4 +143,36 @@ const getMenuData = (node: Node, resolve: (data: IMenuItem[]) => void) => {
 const roleChange = () => {
   
 }
+const onTableRowClick = (row: IRoleItem) => {
+  setCurActiveItem(row)
+}
+const menuIds = computed(() => {
+  return curActiveItem.value?.menus?.map((menu) => menu.id) || []
+})
+const showButton = computed(() => !!curActiveItem.value)
+const roleLoading = ref(false)
+const saveRole = async () => {
+  if (!curActiveItem?.value) return
+  const params = {
+    id: curActiveItem.value.id!,
+    menus:[]
+  }
+  try {
+   await asyncify(() => RoleApi.editRoleMenu(params))()
+  }catch(err) {
+    ElMessage.error((err as Error).message)
+  }
+}
 </script>
+<style rel="stylesheet/scss" lang="scss" scoped>
+ ::v-deep .el-input-number .el-input__inner {
+    text-align: left;
+  }
+ ::v-deep .vue-treeselect__multi-value{
+    margin-bottom: 0;
+  }
+ ::v-deep .vue-treeselect__multi-value-item{
+    border: 0;
+    padding: 0;
+  }
+</style>

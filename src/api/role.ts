@@ -1,4 +1,5 @@
 import axios, { ResponseRecord } from "./index";
+import { IMenuItem } from "./menu";
 
 export type IQueyRolesListParams = {
 	createTime?: string;
@@ -8,13 +9,21 @@ export type IQueyRolesListParams = {
 }
 
 export type IRoleItem = {
-	dataScope: string;
-	description: string;
+	id?: string;
+	name: string;
+	dataScope?: string;
+	description?: string;
 	level: number;
+	menus?: IMenuItem[]
 }
 type IRoleListDTO = {
 	content: IRoleItem[],
 	totalElements: number
+}
+
+type IEditMenuParams = {
+	id: string | number;
+	menus: IMenuItem[]
 }
 export default {
 	getRoles(params?: IQueyRolesListParams) {
@@ -41,5 +50,10 @@ export default {
 				pid:id
 			}
 		})
+	},
+	editRoleMenu(params: IEditMenuParams) {
+		return axios.put("/api/roles/menu", params)
 	}
+
+
 }

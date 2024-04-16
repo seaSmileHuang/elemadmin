@@ -48,7 +48,7 @@
           <el-input v-model="form.title" placeholder="按钮名称" style="width: 178px;" />
         </el-form-item>
         <el-form-item v-show="form.type.toString() !== '0'" label="权限标识" prop="permission">
-          <el-input v-model="form.permission" :disabled="form.iFrame.toString() === 'true'" placeholder="权限标识" style="width: 178px;" />
+          <el-input v-model="form.permission" :disabled="form.iFrame?.toString() === 'true'" placeholder="权限标识" style="width: 178px;" />
         </el-form-item>
         <el-form-item v-if="form.type.toString() !== '2'" label="路由地址" prop="path">
           <el-input v-model="form.path" placeholder="路由地址" style="width: 178px;" />
@@ -56,14 +56,14 @@
         <el-form-item label="菜单排序" prop="menuSort">
           <el-input-number v-model.number="form.menuSort" :min="0" :max="999" controls-position="right" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-show="form.iFrame.toString() !== 'true' && form.type.toString() === '1'" label="组件名称" prop="componentName">
+        <el-form-item v-show="form.iFrame?.toString() !== 'true' && form.type.toString() === '1'" label="组件名称" prop="componentName">
           <el-input v-model="form.componentName" style="width: 178px;" placeholder="匹配组件内Name字段" />
         </el-form-item>
-        <el-form-item v-show="form.iFrame.toString() !== 'true' && form.type.toString() === '1'" label="组件路径" prop="component">
+        <el-form-item v-show="form.iFrame?.toString() !== 'true' && form.type.toString() === '1'" label="组件路径" prop="component">
           <el-input v-model="form.component" style="width: 178px;" placeholder="组件路径" />
         </el-form-item>
-        <el-form-item label="上级目录" prop="pid">     
-          <el-tree-select v-model="form.pid" lazy :load="load">
+        <el-form-item label="上级目录" prop="pid" >     
+          <el-tree-select v-model="form.pid" node-key="id" lazy :load="load" style="width: 450px;">
         </el-tree-select >
         </el-form-item>
       </el-form>
@@ -81,6 +81,7 @@
 import MenuApi, { IMenuItem } from "@/api/menu";
 import { asyncify } from "@/utils/extractData";
 import { ElMessage } from "element-plus";
+import type Node from 'element-plus/es/components/tree/src/model/node';
 import { ref, watch } from 'vue';
 const emits = defineEmits(["update:visible", "onConfirm"])
 const formRef = ref()
@@ -107,17 +108,16 @@ const props = defineProps({
     default: false,
   }
 })
-const form = ref<IMenuItem>({})
+const form = ref<IMenuItem>(props.formValue.value || {
+  type: 1,
+  hidden: false,
+  iFrame: false
+})
+
 const rules: any[] = []
 watch(props.formValue, (newValue) => {
-  console.log("newValue", newValue)
-  form.value = newValue || {
-      type: 1,
-      hidden: false,
-      iFrame: false
-    }
-}, {
-  immediate:true
+  console.log("newValue", newValue.value)
+  form.value = newValue.value 
 })
 
 const onCancel = () => {
@@ -140,9 +140,16 @@ const onConfirm = async () => {
   
 }
 
-const load = (node: { isLeaf: any; id: string; },resolve: (arg0: IMenuItem[]) => void) => {
+const load = (node: Node,resolve: (arg0: IMenuItem[]) => void) => {
+  console.log("node",node)
+  if (node.level === 0) return resolve([
+    {
+      label: "顶层目录",
+      id: 0
+    } as IMenuItem
+  ])
   if (node.isLeaf) return resolve([])
-  asyncify(() => MenuApi.lazyGetMenu(node.id))().then((res) => {
+  asyncify(() => MenuApi.lazyGetMenu(node.key))().then((res) => {
     resolve(res)
   })
 }

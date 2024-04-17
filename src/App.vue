@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import Role from "./views/system/role/index.vue";
+import User from "./views/system/user/index.vue";
 </script>
 
 <template>
   <div>
     <!-- <Menu/> -->
-    <Role/>
+    <!-- <Role/> -->
+    <User/>
   </div>
 </template>
 

@@ -3,7 +3,7 @@ import axios, { ResponseRecord } from "./index";
 
 
 export type IMenuItem = {
-	id: number;
+	id: number |string;
 	cache?: boolean;
 	component?: string;
 	componentName?:string;
@@ -17,8 +17,10 @@ export type IMenuItem = {
 	path: string;
 	permission?: string;
 	pid?: number;
-	title: string;
+	title?: string;
 	type: number;
+	name?: string;
+	children?: IMenuItem[]
 }
 export type IMenuListDTO = {
 	content: IMenuItem[],
@@ -60,5 +62,8 @@ export default {
 	},
 	downloadMenus() {
 		return axios.get("/api/menus/download")
+	},
+	getUserMenus() {
+		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menus/build")
 	}
 }

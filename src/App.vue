@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import User from "./views/system/user/index.vue";
+import MenuWrapper from "./components/menu/MenuWrapper.vue";
 </script>
 
 <template>
   <div>
     <!-- <Menu/> -->
     <!-- <Role/> -->
-    <User/>
+    <MenuWrapper/>
+    <!-- <User/> -->
   </div>
 </template>
 

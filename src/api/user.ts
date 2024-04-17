@@ -27,6 +27,11 @@ export type IQueyUsersListParams = {
   pageSize?:number;
 	enabled?:boolean;
 }
+
+export type IUserInfoItem = {
+	roles: string[];
+	user: IUserItem
+}
 export default {
 	getUsers(params?: IQueyUsersListParams) {
 		return axios.get<ResponseRecord<IUserListDTO>>("/api/users", {
@@ -55,5 +60,9 @@ export default {
 	},
 	downloadUsers() {
 		return axios.get("/api/users/download")
+	},
+	/** 获取用户信息 */
+	getUserInfo() {
+		return axios.get<ResponseRecord<IUserInfoItem>>("/auth/info")
 	}
 }

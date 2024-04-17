@@ -63,6 +63,7 @@
 <script setup lang="ts">
 import MenuApi, { IMenuItem, IQueyMenusListParams } from "@/api/menu";
 import { ModeEnum } from "@/type";
+import { downloadApi } from "@/utils/download";
 import { asyncify } from "@/utils/extractData";
 import { ElButton, ElMessage } from "element-plus";
 import { ref, watch } from "vue";
@@ -107,6 +108,9 @@ watch(query,(newValue) => {
 const operations = ref({
   toAdd() {
     setShowAddMenu(true)
+  },
+  doExport() {
+    downloadApi(() => MenuApi.downloadMenus())
   }
 })
 const isShowAddMenu = ref<boolean>(false)

@@ -53,7 +53,9 @@ export default {
 	},
 	editRoleMenu(params: IEditMenuParams) {
 		return axios.put("/api/roles/menu", params)
+	},
+	downloadRoles() {
+		return axios.get('/api/roles/download')
 	}
-
 
 }

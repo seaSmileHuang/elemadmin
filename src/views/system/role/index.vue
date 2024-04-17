@@ -72,6 +72,7 @@ import MenuApi, { IMenuItem } from "@/api/menu";
 import RoleApi, { IQueyRolesListParams, IRoleItem } from "@/api/role";
 import usePage from "@/hooks/usePage";
 import { ModeEnum } from "@/type";
+import { downloadApi } from "@/utils/download";
 import { asyncify } from "@/utils/extractData";
 import { ElMessage } from "element-plus";
 import type Node from 'element-plus/es/components/tree/src/model/node';
@@ -110,6 +111,9 @@ getAllRoles()
 const operations = ref({
   toAdd() {
     setShowAddRole(true)
+  },
+  doExport() {
+    downloadApi(() => RoleApi.downloadRoles())
   }
 })
 const isShowAddRole = ref<boolean>(false)

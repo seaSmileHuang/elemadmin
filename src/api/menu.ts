@@ -57,5 +57,8 @@ export default {
 				pid:id
 			}
 		})
+	},
+	downloadMenus() {
+		return axios.get("/api/menus/download")
 	}
 }

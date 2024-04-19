@@ -6,7 +6,7 @@
     </div>
     <operation-btn :operations="operations"/>
 
-    <add-menu-modal v-model:visible="isShowAddMenu" :formValue="formValue" :mode="mode" @onConfirm="getAllMenus"/>
+    <add-menu-modal v-model:visible="isShowAddMenu" :formValue="formValue" :mode="mode" @onConfirm="onConfirm"/>
     <!--表格渲染-->
     <el-table
       ref="table"
@@ -80,6 +80,10 @@ const getMenus = (tree:IMenuItem, _treeNode:unknown, resolve: (data:IMenuItem[])
     
 	}, 100);
 }
+const onConfirm = () => {
+  getAllMenus()
+  isShowAddMenu.value = false
+}
 
 const menus = ref<IMenuItem[]>([])
 const listLoding = ref(false)
@@ -88,7 +92,7 @@ const getAllMenus = async (query?: IQueyMenusListParams) => {
   try {
     listLoding.value = true
     const res = await asyncify(() => MenuApi.getMenus(query))()
-    menus.value = res.content || []
+    menus.value = res || []
   } catch(err) {
     ElMessage.error((err as Error)?.message)
   } finally {

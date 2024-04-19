@@ -22,10 +22,7 @@ export type IMenuItem = {
 	name?: string;
 	children?: IMenuItem[]
 }
-export type IMenuListDTO = {
-	content: IMenuItem[],
-	totalElements: number
-}
+
 
 export type IQueyMenusListParams = {
   createTime?: string;
@@ -36,12 +33,12 @@ export type IQueyMenusListParams = {
 }
 export default {
 	getMenus(params?: IQueyMenusListParams) {
-		return axios.get<ResponseRecord<IMenuListDTO>>("/api/menus", {
+		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menu/list", {
 			params
 		})
 	},
 	addMenu(params: IMenuItem) {
-		return axios.post("/api/menus", params)
+		return axios.post("/api/menu/save", params)
 	},
 	editMenu(params: IMenuItem) {
 		return axios.put("/api/menus", params)

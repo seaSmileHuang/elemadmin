@@ -13,9 +13,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target:"https://eladmin.vip",
+        target:"http://192.168.1.104:8080",
         changeOrigin: true,
-
+        rewrite: (path: string) => path.replace("/api", "")
       }
     }
   }

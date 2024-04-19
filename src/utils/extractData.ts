@@ -36,7 +36,7 @@ function asyncify<T, K extends any[]>(
   };
 }
 function extractData<T>({ data }: AxiosResponse<ResponseRecord<T>>) {
-  if (data.ok && data.code === 0) {
+  if (data.code === 200) {
     return data.data;
   } else {
     const err = new ResponseError(data?.msg ?? '未知错误');

@@ -4,9 +4,9 @@
       <el-form ref="formRef" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="form.type" size="mini" style="width: 178px">
-            <el-radio-button label="0">目录</el-radio-button>
-            <el-radio-button label="1">菜单</el-radio-button>
-            <el-radio-button label="2">按钮</el-radio-button>
+            <el-radio-button :label="0">目录</el-radio-button>
+            <el-radio-button :label="1">菜单</el-radio-button>
+            <el-radio-button :label="2">按钮</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item v-show="form.type.toString() !== '2'" label="菜单图标" prop="icon">
@@ -149,7 +149,9 @@ const load = (node: Node,resolve: (arg0: IMenuItem[]) => void) => {
     } as IMenuItem
   ])
   if (node.isLeaf) return resolve([])
-  asyncify(() => MenuApi.lazyGetMenu(node.key))().then((res) => {
+  asyncify(() => MenuApi.getMenus({
+    pid: node.key
+  }))().then((res) => {
     resolve(res)
   })
 }

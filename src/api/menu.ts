@@ -44,10 +44,8 @@ export default {
 		return axios.put("/api/menus", params)
 	},
 	deleteMenus(id: string | number) {
-		return axios.delete("/api/menus", {
-			data: {
-				ids: [id]
-			}
+		return axios.get("/api/menu/delete", {
+			params: {id: id}
 		})
 	},
 	lazyGetMenu(id: string | number) {

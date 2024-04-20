@@ -134,7 +134,8 @@ const onEdiorMenu = (item: IMenuItem) => {
 
 const onDeleteMenu = async (id: number|string) => {
   try {
-    await asyncify(() => MenuApi.deleteMenus(id))
+    await asyncify(() => MenuApi.deleteMenus(id))()
+    getAllMenus()
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }

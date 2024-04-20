@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/js-cookie': ^3.0.6
   '@types/node': ^20.12.7
   '@typescript-eslint/eslint-plugin': ^7.6.0
   '@typescript-eslint/parser': ^7.6.0
@@ -9,6 +10,7 @@ specifiers:
   element-plus: ^2.7.0
   eslint: ^9.0.0
   eslint-plugin-vue: ^9.25.0
+  js-cookie: ^3.0.5
   sass: ^1.75.0
   sass-loader: ^14.2.0
   typescript: ^5.2.2
@@ -21,11 +23,13 @@ specifiers:
 dependencies:
   axios: 1.6.8
   element-plus: 2.7.0_vue@3.4.21
+  js-cookie: 3.0.5
   vue: 3.4.21_typescript@5.4.5
   vue-router: 4.3.0_vue@3.4.21
   vuex: 4.1.0_vue@3.4.21
 
 devDependencies:
+  '@types/js-cookie': 3.0.6
   '@types/node': 20.12.7
   '@typescript-eslint/eslint-plugin': 7.6.0_j6dew5gzmoq6h4cdtguck47zqe
   '@typescript-eslint/parser': 7.6.0_4afqje3zsruxqyyfkwypsdxl3y
@@ -519,6 +523,10 @@ packages:
 
   /@types/estree/1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==, tarball: https://registry.npmmirror.com/@types/estree/-/estree-1.0.5.tgz}
+    dev: true
+
+  /@types/js-cookie/3.0.6:
+    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==, tarball: https://registry.npmmirror.com/@types/js-cookie/-/js-cookie-3.0.6.tgz}
     dev: true
 
   /@types/json-schema/7.0.15:
@@ -1431,6 +1439,11 @@ packages:
   /isexe/2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==, tarball: https://registry.npmmirror.com/isexe/-/isexe-2.0.0.tgz}
     dev: true
+
+  /js-cookie/3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==, tarball: https://registry.npmmirror.com/js-cookie/-/js-cookie-3.0.5.tgz}
+    engines: {node: '>=14'}
+    dev: false
 
   /js-yaml/4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==, tarball: https://registry.npmmirror.com/js-yaml/-/js-yaml-4.1.0.tgz}

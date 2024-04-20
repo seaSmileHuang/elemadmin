@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import MenuWrapper from "./components/menu/MenuWrapper.vue";
+import Layout from "@/views/Layout/index.vue";
 </script>
 
 <template>
   <div>
     <!-- <Menu/> -->
     <!-- <Role/> -->
-    <MenuWrapper/>
+    <!-- <MenuWrapper/> -->
     <!-- <User/> -->
+    <Layout/>
   </div>
 </template>
 

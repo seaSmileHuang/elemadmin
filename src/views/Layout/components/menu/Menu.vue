@@ -1,22 +1,28 @@
 <template>
   <template v-for="item in props.menu">
     <template v-if="item.type === MenuTypeEnum.DIRECTORY">
-      <el-sub-menu :key="item.id" :value="item.path" :title="item.name">
-        <template v-if="item.icon" #icon>
-          <el-icon :name="item.icon" />
-        </template>
-        <template #title>{{item.name}}</template>
-        <Menu :menu="item.children" />
-      </el-sub-menu>
+      <RouterLink :to="item.path">
+        <el-sub-menu :key="item.id" :value="item.path" :title="item.name">
+          <template v-if="item.icon" #icon>
+            <el-icon :name="item.icon" />
+          </template>
+          <template #title>{{item.name}}</template>
+          <Menu :menu="item.children" />
+        </el-sub-menu>
+      </RouterLink>
+
     </template>
 
     <template v-else-if="item.type === MenuTypeEnum.MENU">
-      <el-menu-item :key="item.id" :value="item.path" @click="() => onClick(item)">
-        <template v-if="item.icon" #icon>
-          <el-icon :name="item.icon" />
-        </template>
-        <template #title>{{item.name}}</template>
-      </el-menu-item>
+      <RouterLink :to="item.path">
+        <el-menu-item :key="item.id" :value="item.path" @click="() => onClick(item)">
+          <template v-if="item.icon" #icon>
+            <el-icon :name="item.icon" />
+          </template>
+          <template #title>{{item.name}}</template>
+        </el-menu-item>
+      </RouterLink>
+
     </template>
   </template>
 </template>

@@ -5,8 +5,8 @@
       <el-date-picker type="daterange" v-model="query.createTime" class="date-item" range-separator=":"  start-placeholder="开始日期" end-placeholder="结束日期" style="width: 230px"/>
     </div>
     <operation-btn :operations="operations"/>
-
-    <add-menu-modal v-model:visible="isShowAddMenu" :formValue="formValue" :mode="mode" @onConfirm="onConfirm"/>
+    
+    <add-menu-modal v-model:visible="isShowAddMenu" v-if="isShowAddMenu" :formValue="formValue" :mode="mode" @onConfirm="onConfirm"/>
     <!--表格渲染-->
     <el-table
       ref="table"
@@ -14,7 +14,7 @@
       lazy
       :load="getMenus"
       :data="menus"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      :tree-props="{children: 'children', hasChildren: 'subCount'}"
       row-key="id"
     >
       <el-table-column type="selection" width="55" />
@@ -73,12 +73,9 @@ import OperationBtn from "./components/OperationBtn.vue";
 
 const getMenus = (tree:IMenuItem, _treeNode:unknown, resolve: (data:IMenuItem[]) => void) => {
 	const params = {pid: tree.id}
-	setTimeout(() => {
-		asyncify(() => MenuApi.getMenus(params))().then((res) => {
-      resolve(res.content)
-    })
-    
-	}, 100);
+	asyncify(() => MenuApi.getMenus(params))().then((res) => {
+    resolve(res)
+  })
 }
 const onConfirm = () => {
   getAllMenus()
@@ -119,11 +116,10 @@ const operations = ref({
 })
 const isShowAddMenu = ref<boolean>(false)
 const setShowAddMenu = (flag: boolean) => {
-  console.log("ghkh ")
   isShowAddMenu.value = flag
 }
 
-const formValue = ref({})
+const formValue = ref()
 const mode = ref<ModeEnum>(ModeEnum.ADD)
 
 const onEdiorMenu = (item: IMenuItem) => {

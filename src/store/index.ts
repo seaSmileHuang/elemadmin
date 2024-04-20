@@ -15,7 +15,8 @@ const store = createStore({
       return state.user.user
     },
     routes: (state) => {
-      return state.permission.routers
+      console.log("state11", state)
+      return state.permission.routes
     },
     sidebar: (state) => {
       return state.app.sidebar

@@ -1,10 +1,10 @@
 <template>
-  <div class="menu-wrapper" >
-    <el-menu v-model:expanded="expanded" 
+  <div :class="{'menu-wrapper': true, 'hide-side-bar':collapsed }" >
+    <el-menu 
     :text-color="menuText"
     :active-text-color="menuActiveText"
     :background-color="menuBg"
-    class="menu" theme="dark" default-value="3-2" expand-mutex height="550px" :collapsed="sidebarValue.opened">
+    class="menu" theme="dark" default-value="3-2" height="550px" :collapse="collapsed">
       <Menu :menu="menu" />
 
       <template #operations>
@@ -19,13 +19,11 @@
 <script setup lang="ts">
 import { IMenuItem } from "@/api/menu";
 import { computed, ref } from "vue";
-import { mapGetters } from "vuex";
 import Menu from "./Menu.vue";
-
-const {sidebar} = mapGetters(["sidebar"])
-const sidebarValue = computed(() => sidebar())
-
-const collapsed = ref<Boolean>(false)
+import {useStore} from "vuex"
+const store = useStore()
+console.log('jjj', store.getters.sidebar)
+const collapsed = computed(() => store.getters.sidebar.opened)
 // sidebar
 const menuText = '#bfcbd9';
 const menuActiveText = '#409EFF';
@@ -86,17 +84,7 @@ const menu = ref<IMenuItem[]>([
   left: 0;
   z-index: 1001;
   overflow: hidden;
-  width: 205px;
   transition: width 0.2s;
 }
-.shrink-sidebar {
-  .menu-wrapper {
-    width: 54px !important;
-  }
-}
-.hidden-sidebar {
-  .menu-wrapper {
-    width: 0 !important;
-  }
-}
+
 </style>

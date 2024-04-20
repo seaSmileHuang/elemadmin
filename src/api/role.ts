@@ -14,33 +14,38 @@ export type IRoleItem = {
 	dataScope?: string;
 	description?: string;
 	level: number;
-	menus?: IMenuItem[]
+	menuIds?: Array<string | number>
 }
 type IRoleListDTO = {
-	content: IRoleItem[],
-	totalElements: number
+	records: IRoleItem[],
+	total: number
 }
 
 type IEditMenuParams = {
 	id: string | number;
 	menus: IMenuItem[]
 }
+
+type IBindMenuParams = {
+	roleId: string | number;
+	menuIds: Array<string | number>
+}
 export default {
 	getRoles(params?: IQueyRolesListParams) {
-		return axios.get<ResponseRecord<IRoleListDTO>>("/api/roles", {
+		return axios.get<ResponseRecord<IRoleListDTO>>("/api/role/list", {
 			params
 		})
 	},
 	addRole(params: IRoleItem) {
-		return axios.post("/api/roles", params)
+		return axios.post("/api/role/save", params)
 	},
 	editRole(params: IRoleItem) {
-		return axios.put("/api/roles", params)
+		return axios.post("/api/role/update", params)
 	},
 	deleteRoles(id: string | number) {
-		return axios.delete("/api/roles", {
-			data: {
-				ids: [id]
+		return axios.get("/api/role/delete", {
+			params: {
+				id
 			}
 		})
 	},
@@ -51,11 +56,21 @@ export default {
 			}
 		})
 	},
+	roleDetail(id: string | number) {
+		return axios.get<ResponseRecord<IRoleItem>>("/api/role/detail", {
+			params: {
+				id
+			}
+		})
+	},
 	editRoleMenu(params: IEditMenuParams) {
 		return axios.put("/api/roles/menu", params)
 	},
 	downloadRoles() {
 		return axios.get('/api/roles/download')
+	},
+	roleBindMenu(params: IBindMenuParams) {
+		return axios.post("/api/role/menu/bind", params)
 	}
 
 }

@@ -21,6 +21,7 @@ export type IMenuItem = {
 	type: number;
 	name?: string;
 	children?: IMenuItem[]
+	subCount?: number
 }
 
 
@@ -29,11 +30,11 @@ export type IQueyMenusListParams = {
   blurry?: string;
   pageNum?:number;
   pageSize?:number;
-	pid?:number;
+	pid?:number | string;
 }
 export default {
 	getMenus(params?: IQueyMenusListParams) {
-		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menu/list", {
+		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menu/lazy", {
 			params
 		})
 	},
@@ -41,7 +42,7 @@ export default {
 		return axios.post("/api/menu/save", params)
 	},
 	editMenu(params: IMenuItem) {
-		return axios.put("/api/menus", params)
+		return axios.post("/api/menu/update", params)
 	},
 	deleteMenus(id: string | number) {
 		return axios.get("/api/menu/delete", {
@@ -59,6 +60,6 @@ export default {
 		return axios.get("/api/menus/download")
 	},
 	getUserMenus() {
-		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menus/build")
+		return axios.get<ResponseRecord<IMenuItem[]>>("/api/menu/build")
 	}
 }

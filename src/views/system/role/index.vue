@@ -5,7 +5,7 @@
     </div>
     <operation-btn :operations="operations"/>
     
-    <add-role-modal v-model:visible="isShowAddRole" :formValue="curActiveItem" :mode="mode" @onConfirm="getAllRoles"/>
+    <add-role-modal v-model:visible="isShowAddRole"  v-if="isShowAddRole" :formValue="curActiveItem" :mode="mode" @onConfirm="onConfirm"/>
     <el-row :gutter="15">
       <!--角色管理-->
       <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17" style="margin-bottom: 10px">
@@ -53,7 +53,7 @@
           <el-tree
             ref="role"
             lazy
-            :default-checked-keys="menuIds"
+            :default-checked-keys="curActiveItem?.menuIds"
             :load="getMenuData"
             :props="defaultProps"
             check-strictly
@@ -91,17 +91,23 @@ const query = ref<IQueyRolesListParams>({
 })
 const defaultProps = {
   label: "title",
+  isLeaf: "isLeaf"
 }
 
 watch(query,(newValue) => {
   getAllRoles(newValue)
+
 })
 
+const onConfirm = () => {
+  getAllRoles()
+  setShowAddRole(false)
+}
 const roles = ref<IRoleItem[]>([])
 const getAllRoles = async (query?: IQueyRolesListParams) => {
   try {
     const res = await asyncify(() => RoleApi.getRoles(query))()
-    roles.value = res.content || []
+    roles.value = res.records || []
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
@@ -130,7 +136,8 @@ const onEdiorRole = (item: IRoleItem) => {
 
 const onDeleteRole = async (id: number|string) => {
   try {
-    await asyncify(() => RoleApi.deleteRoles(id))
+    await asyncify(() => RoleApi.deleteRoles(id))()
+    getAllRoles()
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
@@ -138,31 +145,42 @@ const onDeleteRole = async (id: number|string) => {
 }
 
 const getMenuData = (node: Node, resolve: (data: IMenuItem[]) => void) => {
-  let pid = node.level === 1 ? 0 : node.id
-  asyncify(() => MenuApi.lazyGetMenu(pid))().then((res) => {
-    resolve(res)
+  let pid = node.level === 0 ? 0 : node.key
+  asyncify(() => MenuApi.getMenus({pid}))().then((res) => {
+    resolve(res.map((item) => ({...item, isLeaf: !item.subCount})))
   })
 
 }
-const roleChange = () => {
-  
+const checkedMenuKeys = ref<Array<string | number>>([])
+const roleChange = (_: any, {checkedKeys}: any) => {
+  console.log("checkedKeys", checkedKeys)
+  checkedMenuKeys.value = checkedKeys
 }
 const onTableRowClick = (row: IRoleItem) => {
+  if (!row || !row.id) return;
   setCurActiveItem(row)
+  
 }
-const menuIds = computed(() => {
-  return curActiveItem.value?.menus?.map((menu) => menu.id) || []
+watch(curActiveItem, async (newValue, beforeValue) => {
+  if (!newValue || !newValue.id || newValue?.id === beforeValue?.id) return;
+  const detail = await asyncify(() => RoleApi.roleDetail(newValue.id!))()
+  checkedMenuKeys.value = detail.menuIds || []
+  setCurActiveItem({
+    ...newValue,
+    menuIds: detail.menuIds
+  })
 })
+
 const showButton = computed(() => !!curActiveItem.value)
 const roleLoading = ref(false)
 const saveRole = async () => {
   if (!curActiveItem?.value) return
   const params = {
-    id: curActiveItem.value.id!,
-    menus:[]
+    roleId: curActiveItem.value.id!,
+    menuIds:checkedMenuKeys.value || []
   }
   try {
-   await asyncify(() => RoleApi.editRoleMenu(params))()
+   await asyncify(() => RoleApi.roleBindMenu(params))()
   }catch(err) {
     ElMessage.error((err as Error).message)
   }

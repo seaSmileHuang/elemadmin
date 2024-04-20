@@ -1,6 +1,6 @@
 <template>
 	  <!--表单渲染-->
-		<el-dialog append-to-body :close-on-click-modal="false" :model-value="props.visible" title="新增菜单" width="580px">
+		<el-dialog append-to-body :close-on-click-modal="false" :model-value="true" :title="title" width="580px">
       <el-form ref="formRef" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="form.type" size="mini" style="width: 178px">
@@ -9,7 +9,7 @@
             <el-radio-button :label="2">按钮</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="form.type.toString() !== '2'" label="菜单图标" prop="icon">
+        <el-form-item v-show="form.type !== '2'" label="菜单图标" prop="icon">
           <!-- <el-popover
             placement="bottom-start"
             width="450"
@@ -23,47 +23,47 @@
             </el-input>
           </el-popover> -->
         </el-form-item>
-        <el-form-item v-show="form.type.toString() !== '2'" label="外链菜单" prop="iFrame">
+        <el-form-item v-show="form.type !== 2" label="外链菜单" prop="iFrame">
           <el-radio-group v-model="form.iFrame" size="mini">
             <el-radio-button label="true">是</el-radio-button>
             <el-radio-button label="false">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="form.type.toString() === '1'" label="菜单缓存" prop="cache">
+        <el-form-item v-show="form.type === 1" label="菜单缓存" prop="cache">
           <el-radio-group v-model="form.cache" size="mini">
             <el-radio-button label="true">是</el-radio-button>
             <el-radio-button label="false">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="form.type.toString() !== '2'" label="菜单可见" prop="hidden">
+        <el-form-item v-show="form.type !== 2" label="菜单可见" prop="hidden">
           <el-radio-group v-model="form.hidden" size="mini">
             <el-radio-button label="false">是</el-radio-button>
             <el-radio-button label="true">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="form.type.toString() !== '2'" label="菜单标题" prop="title">
-          <el-input v-model="form.title" :style=" form.type.toString() === '0' ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
+        <el-form-item v-if="form.type !== 2" label="菜单标题" prop="title">
+          <el-input v-model="form.title" :style=" form.type === 0 ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
         </el-form-item>
-        <el-form-item v-if="form.type.toString() === '2'" label="按钮名称" prop="title">
+        <el-form-item v-if="form.type === 2" label="按钮名称" prop="title">
           <el-input v-model="form.title" placeholder="按钮名称" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-show="form.type.toString() !== '0'" label="权限标识" prop="permission">
-          <el-input v-model="form.permission" :disabled="form.iFrame?.toString() === 'true'" placeholder="权限标识" style="width: 178px;" />
+        <el-form-item v-show="form.type !== 0" label="权限标识" prop="permission">
+          <el-input v-model="form.permission" :disabled="form.iFrame" placeholder="权限标识" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-if="form.type.toString() !== '2'" label="路由地址" prop="path">
+        <el-form-item v-if="form.type !== 2" label="路由地址" prop="path">
           <el-input v-model="form.path" placeholder="路由地址" style="width: 178px;" />
         </el-form-item>
         <el-form-item label="菜单排序" prop="menuSort">
           <el-input-number v-model.number="form.menuSort" :min="0" :max="999" controls-position="right" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-show="form.iFrame?.toString() !== 'true' && form.type.toString() === '1'" label="组件名称" prop="componentName">
+        <el-form-item v-show="form.type === 1" label="组件名称" prop="componentName">
           <el-input v-model="form.componentName" style="width: 178px;" placeholder="匹配组件内Name字段" />
         </el-form-item>
-        <el-form-item v-show="form.iFrame?.toString() !== 'true' && form.type.toString() === '1'" label="组件路径" prop="component">
+        <el-form-item v-show="form.type === 1" label="组件路径" prop="component">
           <el-input v-model="form.component" style="width: 178px;" placeholder="组件路径" />
         </el-form-item>
         <el-form-item label="上级目录" prop="pid" >     
-          <el-tree-select v-model="form.pid" node-key="id" lazy :load="load" style="width: 450px;">
+          <el-tree-select v-model="form.pid" node-key="id" lazy :load="load" style="width: 450px;" :props="menuProps" :expand-on-click-node="false" check-on-click-node check-strictly>
         </el-tree-select >
         </el-form-item>
       </el-form>
@@ -86,6 +86,10 @@ import { ref, watch } from 'vue';
 const emits = defineEmits(["update:visible", "onConfirm"])
 const formRef = ref()
 
+const menuProps = {
+  label: "title",
+  isLeaf: "isLeaf"
+}
 const props = defineProps({
   formValue: {
 		type: Object,
@@ -108,17 +112,20 @@ const props = defineProps({
     default: false,
   }
 })
-const form = ref<IMenuItem>(props.formValue.value || {
+console.log("props,",props.formValue)
+const title = props.mode === "ADD" ? "新增菜单":'编辑菜单'
+
+const form = ref<IMenuItem>({...props.formValue} as IMenuItem || {
   type: 1,
   hidden: false,
   iFrame: false
 })
 
 const rules: any[] = []
-watch(props.formValue, (newValue) => {
-  console.log("newValue", newValue.value)
-  form.value = newValue.value 
-})
+// watch(props.formValue.value, (newValue) => {
+//   console.log("newValue", newValue)
+//   form.value = newValue.value 
+// })
 
 const onCancel = () => {
   emits("update:visible", false)
@@ -144,15 +151,15 @@ const load = (node: Node,resolve: (arg0: IMenuItem[]) => void) => {
   console.log("node",node)
   if (node.level === 0) return resolve([
     {
-      label: "顶层目录",
-      id: 0
+      title: "顶层目录",
+      id: 0,
     } as IMenuItem
   ])
   if (node.isLeaf) return resolve([])
   asyncify(() => MenuApi.getMenus({
     pid: node.key
   }))().then((res) => {
-    resolve(res)
+    resolve(res.map((item) => ({...item, isLeaf: !item.subCount})))
   })
 }
 </script>

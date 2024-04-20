@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import Layout from "@/views/Layout/index.vue";
+import Role from "@/views/system/role/index.vue";
+import Menu from "@/views/system/menu/index.vue"
+import Cookies from "js-cookie";
+import {useStore} from "vuex"
+
 </script>
 
 <template>
   <div>
-    <!-- <Menu/> -->
     <!-- <Role/> -->
+    <!-- <Menu/> -->
     <!-- <MenuWrapper/> -->
     <!-- <User/> -->
-    <Layout/>
+    <!-- <Layout/> -->
+    <router-view/>
   </div>
 </template>
 

@@ -73,14 +73,11 @@ const props = defineProps({
     default: "ADD"
   },
 })
-const form = ref<IRoleItem>({
+const form = ref<IRoleItem>(props.formValue || {
 	level:3,
 	name: ""
 })
 
-watch(() => props.formValue, (newValue: IRoleItem) => {
-	form.value = newValue
-})
 
 const onCancel = () => {
 	emits("update:visible", false)

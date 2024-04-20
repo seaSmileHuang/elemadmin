@@ -2,7 +2,7 @@
 	  <div class="app-wrapper">
     	<MenuWrapper class="sidebar-container" />
     	<div class="main-container">
-    	  <app-main />
+    	  <router-view/>
     	</div>
   	</div>
 </template>

@@ -9,7 +9,7 @@
             <el-radio-button :label="2">按钮</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="form.type !== '2'" label="菜单图标" prop="icon">
+        <el-form-item v-show="form.type !== 2" label="菜单图标" prop="icon">
           <!-- <el-popover
             placement="bottom-start"
             width="450"

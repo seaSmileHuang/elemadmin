@@ -70,21 +70,15 @@ const menu = ref<IMenuItem[]>([
 </script>
 
 <style scoped lang="scss">
-.menu-wrapper {
-  height: 100%;
-}
 </style>
 <style lang="scss">
 .menu-wrapper {
   height: 100%;
-  position: fixed;
-  font-size: 0;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1001;
-  overflow: hidden;
+
   transition: width 0.2s;
+  .menu {
+    height: 100%;
+  }
 }
 
 </style>

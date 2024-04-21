@@ -2,23 +2,19 @@ import axios, { ResponseRecord } from "./index";
 import { IMenuItem } from "./menu";
 
 export type IQueyDeptsListParams = {
-	createTime?: string;
+createTime?: string;
   blurry?: string;
-  pageNum:number;
-  pageSize:number;
+  pid?: string | number;
 }
 
 export type IDeptItem = {
 	id?: string | number;
 	name: string;
-	label: string;
-	dataScope?: string;
-	level: number;
+	deptSort: number;
+	enabled?: boolean;
+	isTop?: boolean;
+	subCount?: number;
 	pid?: string | number;
-}
-type IDeptListDTO = {
-	content: IDeptItem[],
-	totalElements: number
 }
 
 type IEditMenuParams = {
@@ -27,20 +23,20 @@ type IEditMenuParams = {
 }
 export default {
 	getDepts(params?: IQueyDeptsListParams) {
-		return axios.get<ResponseRecord<IDeptListDTO>>("/api/depts", {
+		return axios.get<ResponseRecord<IDeptItem[]>>("/api/dept/lazy", {
 			params
 		})
 	},
 	addDept(params: IDeptItem) {
-		return axios.post("/api/depts", params)
+		return axios.post("/api/dept/sve", params)
 	},
 	editDept(params: IDeptItem) {
-		return axios.put("/api/depts", params)
+		return axios.post("/api/dept/update", params)
 	},
 	deleteDepts(id: string | number) {
-		return axios.delete("/api/depts", {
-			data: {
-				ids: [id]
+		return axios.get("/api/dept/delete", {
+			params: {
+				id
 			}
 		})
 	},

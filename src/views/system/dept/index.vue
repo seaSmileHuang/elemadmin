@@ -8,7 +8,7 @@
         v-loading="loading"
         lazy
         :load="getDeptDatas"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :tree-props="{children: 'children', hasChildren: 'subCount'}"
         :data="depts"
         row-key="id"
         @node-click="onTableRowClick"
@@ -116,13 +116,14 @@ const onDeleteDept = async (id: number|string) => {
   
 }
 
-const getDeptDatas = (node: Node, resolve: (data: IDeptItem[]) => void) => {
-  let pid = node.level === 0 ? 0 : node.key
-  asyncify(() => DeptApi.getDepts({pid}))().then((res) => {
+
+const getDeptDatas = (tree:IDeptItem, _treeNode:unknown, resolve: (data:IDeptItem[]) => void) => {
+	const params = {pid: tree.id}
+	asyncify(() => DeptApi.getDepts(params))().then((res) => {
     resolve((res|| []).map((item) => ({...item, isLeaf: !item.subCount})))
   })
-
 }
+
 
 const onTableRowClick = (row: IDeptItem) => {
   if (!row || !row.id) return;

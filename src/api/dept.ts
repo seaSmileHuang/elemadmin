@@ -28,7 +28,7 @@ export default {
 		})
 	},
 	addDept(params: IDeptItem) {
-		return axios.post("/api/dept/sve", params)
+		return axios.post("/api/dept/save", params)
 	},
 	editDept(params: IDeptItem) {
 		return axios.post("/api/dept/update", params)
@@ -37,14 +37,6 @@ export default {
 		return axios.get("/api/dept/delete", {
 			params: {
 				id
-			}
-		})
-	},
-	lazyGetDept({id, name}: {id?: string | number, name?: string}) {
-		return axios.get<ResponseRecord<IDeptItem[]>>("/api/depts/lazy", {
-			params: {
-				pid:id,
-				name
 			}
 		})
 	},

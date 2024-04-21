@@ -75,7 +75,7 @@ const depts = ref<IDeptItem[]>([])
 const getAllDepts = async (query?: IQueyDeptsListParams) => {
   try {
     const res = await asyncify(() => DeptApi.getDepts(query))()
-    depts.value = res.records || []
+    depts.value = res || []
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }

@@ -1,4 +1,5 @@
 import store from "@/store";
+import { addRoutes } from "@/store/modules/permission";
 import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },
@@ -21,16 +22,22 @@ router.beforeEach(async (to,from,next) => {
     if (to.path === '/login') {
       next({path: "/"})
     } else {
-      // await store.dispatch("GetUserInfo")
-      await store.dispatch("getRoutes")
-      /** 添加动态路由 */
-      console.log("store.getters.routers", store.getters.routes)
-      router.addRoute((store.getters.routes || []).concat({
-        path: "*",
-        redirect: "/404"
-      }))
-      console.log("router", router.getRoutes())
-      next()
+      if (store.getters.routes?.length) {
+        next()
+      } else {
+        // await store.dispatch("GetUserInfo")
+        await store.dispatch("getRoutes")
+        /** 添加动态路由 */
+        console.log("store.getters.routers", store.getters.routes)
+        addRoutes((store.getters.routes || []).concat({
+          path: "/:pathMatch(.*)",
+          redirect: "/404"
+        }))
+        console.log("router", router.getRoutes())
+
+        next({...to, replace: true})
+      }
+
     }
   }
 })

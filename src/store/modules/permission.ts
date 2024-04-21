@@ -3,6 +3,7 @@ import { asyncify } from "@/utils/extractData"
 import { RouteRecordRaw } from "vue-router"
 import { Commit } from "vuex"
 import Layout from "@/views/Layout/index.vue"
+import router from "@/router"
 
 type State = {
 	routes: Array<RouteRecordRaw>
@@ -27,16 +28,26 @@ const permission = {
 	}
 }
 
+const modules = import.meta.glob("@/views/**/*.vue")
+
 export default permission
 const filterAsyncRouter = (menus: IMenuItem[]): Array<RouteRecordRaw> => {
 	return menus.map((menu) => {
 		return {
 			path: menu.path,
-			name: menu.title,
+			name: menu.name,
 			component: menu.component ? lazyComponent(menu.component): Layout,
 			children: filterAsyncRouter(menu.children || [])
 		}
 	})
 }
 
-const lazyComponent = (path: string) => () => import(`@/views${path}/index.vue`).then((res) => res.default)
+console.log("modules", modules)
+const lazyComponent = (path: string) => modules[`/src/views${path}/index.vue`]
+export const addRoutes = (routes: Array<RouteRecordRaw>) => {
+	console.log("routes",routes)
+		routes.forEach((route) => {
+			router.addRoute(route)
+		})
+	
+}

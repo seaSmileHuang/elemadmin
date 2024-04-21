@@ -56,7 +56,7 @@
         <el-form-item label="菜单排序" prop="menuSort">
           <el-input-number v-model.number="form.menuSort" :min="0" :max="999" controls-position="right" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-show="form.type === 1" label="组件名称" prop="componentName">
+        <el-form-item v-show="form.type === 1" label="组件名称" prop="name">
           <el-input v-model="form.componentName" style="width: 178px;" placeholder="匹配组件内Name字段" />
         </el-form-item>
         <el-form-item v-show="form.type === 1" label="组件路径" prop="component">

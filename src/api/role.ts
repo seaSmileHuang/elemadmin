@@ -49,13 +49,6 @@ export default {
 			}
 		})
 	},
-	lazyGetRole(id: string) {
-		return axios.get<ResponseRecord<IRoleItem[]>>("/api/roles/lazy", {
-			params: {
-				pid:id
-			}
-		})
-	},
 	roleDetail(id: string | number) {
 		return axios.get<ResponseRecord<IRoleItem>>("/api/role/detail", {
 			params: {

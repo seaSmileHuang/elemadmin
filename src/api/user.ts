@@ -16,8 +16,7 @@ export type IUserItem = {
 	
 }
 export type IUserListDTO = {
-	content: IUserItem[],
-	totalElements: number
+	records: IUserItem[],
 }
 
 export type IQueyUsersListParams = {

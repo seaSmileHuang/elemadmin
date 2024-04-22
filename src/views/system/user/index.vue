@@ -96,6 +96,7 @@
       		</template>
 				</el-dialog>
       </el-col>
+      <add-user-modal v-model:visible="isShowAddUser" :formValue="curActiveItem" :mode="mode" @onConfirm="onConfirm"/>
     </el-row>
 </template>
 
@@ -110,6 +111,7 @@ import { ElMessage } from 'element-plus';
 import type Node from 'element-plus/es/components/tree/src/model/node';
 import { ref, watch } from 'vue';
 import OperationBtn from '../menu/components/OperationBtn.vue';
+import addUserModal from "./components/addUserModal.vue";
 const {	pageSize,
 		pageNum,
 		loading,
@@ -146,7 +148,7 @@ const users = ref<IUserItem[]>([])
 const getAllUsers = async (query?: IQueyUsersListParams) => {
   try {
     const res = await asyncify(() => UserApi.getUsers(query))()
-    users.value = res.content || []
+    users.value = res.records || []
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
@@ -209,15 +211,15 @@ const getDeptDatas = (node: Node, resolve: (data: IDeptItem[]) => void) => {
   } else {
     pid = node.key
   }
-	asyncify(() => DeptApi.lazyGetDept({
-    id:pid
+	asyncify(() => DeptApi.getDepts({
+    pid
   }))().then((res) => {
     resolve(res)
   })
 }
 const searchDept = async (name?: string) => {
-  await asyncify(() => DeptApi.lazyGetDept({
-    name
+  await asyncify(() => DeptApi.getDepts({
+    departmentName: name
   }))()
 }
 </script>

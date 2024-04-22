@@ -5,6 +5,7 @@ export type IQueyDeptsListParams = {
 createTime?: string;
   blurry?: string;
   pid?: string | number;
+	departmentName?: string
 }
 
 export type IDeptItem = {

@@ -5,7 +5,6 @@
         <div class="head-container">
           <el-input
             clearable
-            size="small"
             placeholder="输入部门名称搜索"
             prefix-icon="el-icon-search"
             class="filter-item"
@@ -27,7 +26,6 @@
           <el-input
               v-model="query.blurry"
               clearable
-              size="small"
               placeholder="输入名称或者邮箱搜索"
               style="width: 200px;"
               class="filter-item"
@@ -36,7 +34,6 @@
           <el-select
               v-model="query.enabled"
               clearable
-              size="small"
               placeholder="状态"
               class="filter-item"
               style="width: 90px"
@@ -126,7 +123,7 @@ const enabledTypeOptions = [
 	},
 	{
 		key: false,
-		disdisplay_name: "锁定"
+		display_name: "禁用"
 	}
 ]
 const onTableRowClick = (row: IUserItem) => {

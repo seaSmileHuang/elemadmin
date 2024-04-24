@@ -1,6 +1,6 @@
 <template>
     <div class="head-container">
-      <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" />
+      <el-input v-model="query.blurry" clearable  placeholder="模糊搜索" style="width: 200px;" class="filter-item" />
       <el-date-picker type="daterange" v-model="query.createTime" class="date-item" range-separator=":"  start-placeholder="开始日期" end-placeholder="结束日期" style="width: 230px"/>
     </div>
     <operation-btn :operations="operations"/>

@@ -1,7 +1,7 @@
 <template>
 	<div>
     <div class="head-container">
-      <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" />
+      <el-input v-model="query.blurry" clearable placeholder="模糊搜索" style="width: 200px;" class="filter-item" />
       <el-date-picker type="daterange" v-model="query.createTime" class="date-item" range-separator=":"  start-placeholder="开始日期" end-placeholder="结束日期" style="width: 230px"/>
     </div>
     <operation-btn :operations="operations"/>
@@ -18,6 +18,7 @@
       row-key="id"
     >
       <el-table-column type="selection" width="55" />
+      <el-table-column :show-overflow-tooltip="true" label="菜单m" width="125px" prop="title" />
       <el-table-column :show-overflow-tooltip="true" label="菜单标题" width="125px" prop="title" />
       <el-table-column prop="icon" label="图标" align="center" width="60px">
         <template v-slot="scope">

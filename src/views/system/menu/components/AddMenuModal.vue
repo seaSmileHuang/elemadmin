@@ -56,8 +56,8 @@
         <el-form-item label="菜单排序" prop="menuSort">
           <el-input-number v-model.number="form.menuSort" :min="0" :max="999" controls-position="right" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-show="form.type === 1" label="组件名称" prop="name">
-          <el-input v-model="form.componentName" style="width: 178px;" placeholder="匹配组件内Name字段" />
+        <el-form-item v-show="form.type === 1" label="菜单名称" prop="meta.name">
+          <el-input v-model="form.meta.name" style="width: 178px;" placeholder="匹配组件内Name字段" />
         </el-form-item>
         <el-form-item v-show="form.type === 1" label="组件路径" prop="component">
           <el-input v-model="form.component" style="width: 178px;" placeholder="组件路径" />
@@ -82,7 +82,7 @@ import MenuApi, { IMenuItem } from "@/api/menu";
 import { asyncify } from "@/utils/extractData";
 import { ElMessage } from "element-plus";
 import type Node from 'element-plus/es/components/tree/src/model/node';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 const emits = defineEmits(["update:visible", "onConfirm"])
 const formRef = ref()
 

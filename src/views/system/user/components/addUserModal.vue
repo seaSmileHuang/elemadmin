@@ -1,6 +1,6 @@
 <template>
 	      <!--表单渲染-->
-				<el-dialog append-to-body :close-on-click-modal="false"  :model-value="props.visible" :title="title" width="570px">
+				<el-dialog append-to-body  :close-on-click-modal="false"  :model-value="props.visible" :title="title" width="570px">
           <el-form ref="formRef" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" />
@@ -34,8 +34,8 @@
             </el-form-item>
             <el-form-item label="性别">
               <el-radio-group v-model="form.gender" style="width: 178px">
-                <el-radio value="男">男</el-radio>
-                <el-radio value="女">女</el-radio>
+                <el-radio value="man">男</el-radio>
+                <el-radio value="woman">女</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="状态">
@@ -76,6 +76,7 @@
 
 <script setup lang="ts">
 import DeptApi, { IDeptItem } from "@/api/dept";
+import JobApi, { IJobItem } from "@/api/job";
 import RoleApi, { IRoleItem } from "@/api/role";
 import UserApi, { IUserItem } from "@/api/user";
 import { asyncify } from "@/utils/extractData";
@@ -127,6 +128,8 @@ const props = defineProps({
     default: false,
   }
 })
+
+
 console.log("props,",props.formValue)
 const title = props.mode === "ADD" ? "新增部门":'编辑部门'
 
@@ -135,17 +138,6 @@ const form = ref<IUserItem>({...props.formValue} as IUserItem)
 watch(() => props.formValue, (newValue) => {
   form.value = newValue as IUserItem
 })
-
-const jobs = [
-  {
-    name: "男",
-    id: "male"
-  },
-  {
-    name: "女",
-    id: "woman"
-  }
-]
 
 const roles = ref<IRoleItem[]>([])
 const getRoles = async () => {
@@ -157,6 +149,16 @@ const getRoles = async () => {
   }
 }
 getRoles()
+const jobs = ref<IJobItem[]>([])
+const getJobs = async () => {
+  try {
+    const res = await asyncify(() => JobApi.getJobs())()
+    jobs.value = res || []
+  } catch(err) {
+    ElMessage.error((err as Error).message ?? '删除失败')
+  }
+}
+getJobs()
 
 const rules: any[] = []
 

@@ -1,9 +1,9 @@
 import MenuApi, { IMenuItem } from "@/api/menu"
+import router from "@/router"
 import { asyncify } from "@/utils/extractData"
+import Layout from "@/views/Layout/index.vue"
 import { RouteRecordRaw } from "vue-router"
 import { Commit } from "vuex"
-import Layout from "@/views/Layout/index.vue"
-import router from "@/router"
 
 type State = {
 	routes: Array<RouteRecordRaw>

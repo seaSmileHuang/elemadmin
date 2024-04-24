@@ -20,6 +20,9 @@ const store = createStore({
     },
     sidebar: (state) => {
       return state.app.sidebar
+    },
+    tagViews: (state) => {
+      return state.app.tagViews
     }
   },
   mutations: {

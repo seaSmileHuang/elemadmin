@@ -3,7 +3,9 @@ import { addRoutes } from "@/store/modules/permission";
 import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },
-  {path: "/home", name: "home", component: () => import("@/views/home.vue")},
+  {path: "/home", name: "home", component: () => import("@/views/home.vue"), meta: {
+    title: "首页"
+  }},
   { path: "/404", name: "404", component: () => import("@/views/404.vue") },
   { path: "/401", name: "401", component: () => import("@/views/401.vue") },
   { path: "/login", name: "login", component: () => import("@/views/login.vue")}

@@ -47,6 +47,7 @@ const onClick = (item: IMenuItem) => {
   router.push({
     path: item.path,
   })
+  
 }
 </script>
 

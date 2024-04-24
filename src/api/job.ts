@@ -4,8 +4,8 @@ export type IQueyJobsListParams = {
 createTime?: string;
   blurry?: string;
   pid?: string | number;
-  pageNum: number;
-  pageSize: number
+  pageNum?: number;
+  pageSize?: number
 }
 
 export type IJobItem = {

@@ -23,8 +23,8 @@
             <el-table-column :show-overflow-tooltip="true" width="135px" prop="createTime" label="创建日期" />
             <el-table-column label="操作" width="130px" align="center" fixed="right">
               <template v-slot="scope">
-                <ElButton @click="() => onEdiorRole(scope.row)">编辑</ElButton>
-                <ElButton @click="() => onDeleteRole(scope.row.id)">删除</ElButton>
+                <ElButton v-permission="AuthFunction.编辑角色" @click="() => onEdiorRole(scope.row)">编辑</ElButton>
+                <ElButton v-permission="AuthFunction.删除角色" @click="() => onDeleteRole(scope.row.id)">删除</ElButton>
               </template>
             </el-table-column>
           </el-table>
@@ -72,6 +72,7 @@ import MenuApi, { IMenuItem } from "@/api/menu";
 import RoleApi, { IQueyRolesListParams, IRoleItem } from "@/api/role";
 import usePage from "@/hooks/usePage";
 import { ModeEnum } from "@/type";
+import { AuthFunction } from "@/type.ts";
 import { downloadApi } from "@/utils/download";
 import { asyncify } from "@/utils/extractData";
 import { ElMessage } from "element-plus";

@@ -6,11 +6,11 @@ import { RouteRecordRaw } from "vue-router"
 import { Commit } from "vuex"
 
 type State = {
-	routes: Array<RouteRecordRaw>
+	routes: Array<RouteRecordRaw>,
 }
 const permission = {
 	state: {
-		routes: []
+		routes: [],
 	} as State,
 	getters: {
 	
@@ -24,13 +24,15 @@ const permission = {
 		getRoutes: async ({commit}: {commit: Commit}) => {
 			const res = await asyncify(() => MenuApi.getUserMenus())()
 			commit("SET_ROUTERS", filterAsyncRouter(res))
-		}
+		},
 	}
 }
 
 const modules = import.meta.glob("@/views/**/*.vue")
 
 export default permission
+// TODO: 过滤掉功能权限
+// remove动态路由
 const filterAsyncRouter = (menus: IMenuItem[]): Array<RouteRecordRaw> => {
 	return menus.map((menu) => {
 		return {

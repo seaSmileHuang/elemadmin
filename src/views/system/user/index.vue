@@ -74,8 +74,8 @@
           <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期" />
 					<el-table-column label="操作" width="130px" align="center" fixed="right">
             <template v-slot="scope">
-              <ElButton @click="() => onEdiorUser(scope.row)">编辑</ElButton>
-              <ElButton @click="() => onDeleteUser(scope.row.id)">删除</ElButton>
+              <ElButton v-permission="AuthFunction.编辑用户" @click="() => onEdiorUser(scope.row)">编辑</ElButton>
+              <ElButton v-permission="AuthFunction.删除用户" @click="() => onDeleteUser(scope.row.id)">删除</ElButton>
             </template>
           </el-table-column>
         </el-table>
@@ -102,6 +102,7 @@ import DeptApi, { IDeptItem } from "@/api/dept";
 import UserApi, { IQueyUsersListParams, IUserItem } from "@/api/user";
 import usePage from '@/hooks/usePage';
 import { ModeEnum } from '@/type';
+import { AuthFunction } from "@/type.ts";
 import { downloadApi } from '@/utils/download';
 import { asyncify } from '@/utils/extractData';
 import { ElMessage } from 'element-plus';

@@ -1,6 +1,8 @@
+import LoginApi from "@/api/login";
 import UserApi, { IUserInfoItem, IUserItem } from "@/api/user";
 import { asyncify } from "@/utils/extractData";
 import { Commit } from "vuex";
+;
 
 type State = {
 	user: IUserItem;
@@ -24,6 +26,15 @@ const user = {
 		async GetInfo({commit}: {commit: Commit}) {
 			const res = await asyncify(() => UserApi.getUserInfo())()
 			setUserInfo(res, commit)
+		},
+		async login({commit}, params: string) {
+			const res = await asyncify(() => LoginApi.login(params))()
+			setUserInfo(res, commit)
+		},
+		async loginout({commit}) {
+			await asyncify(() => LoginApi.loginout())()
+			commit("SET_ROLES", [])
+			commit("SET_USERS", {})
 		}
 	}
 }

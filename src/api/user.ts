@@ -28,6 +28,7 @@ export type IQueyUsersListParams = {
 }
 
 export type IUserInfoItem = {
+	token?: string;
 	roles: string[];
 	user: IUserItem
 }
@@ -62,6 +63,6 @@ export default {
 	},
 	/** 获取用户信息 */
 	getUserInfo() {
-		return axios.get<ResponseRecord<IUserInfoItem>>("/auth/info")
+		return axios.get<ResponseRecord<IUserInfoItem>>("/api/auth/info")
 	}
 }

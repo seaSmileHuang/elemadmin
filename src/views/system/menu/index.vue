@@ -53,8 +53,8 @@
       <el-table-column prop="createTime" label="创建日期" width="135px" />
       <el-table-column label="操作" width="130px" align="center" fixed="right">
         <template v-slot="scope">
-          <ElButton @click="() => onEdiorMenu(scope.row)">编辑</ElButton>
-          <ElButton @click="() => onDeleteMenu(scope.row.id)">删除</ElButton>
+          <ElButton v-permission="AuthFunction.编辑菜单" @click="() => onEdiorMenu(scope.row)">编辑</ElButton>
+          <ElButton v-permission="AuthFunction.删除菜单" @click="() => onDeleteMenu(scope.row.id)">删除</ElButton>
         </template>
       </el-table-column>
     </el-table>
@@ -64,6 +64,7 @@
 <script setup lang="ts">
 import MenuApi, { IMenuItem, IQueyMenusListParams } from "@/api/menu";
 import { ModeEnum } from "@/type";
+import { AuthFunction } from "@/type.ts";
 import { downloadApi } from "@/utils/download";
 import { asyncify } from "@/utils/extractData";
 import { ElButton, ElMessage } from "element-plus";

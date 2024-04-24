@@ -23,8 +23,12 @@ app.use(store)
 app.use(ElementPlus)
 app.mount('#app')
 
-// Vue.withDirectives("permission", {
-// 	inserted(el, binding) {
-// 		const permissionValue = binding.value
-// 	}
-// })
+app.directive("permission", {
+	mounted(el, binding) {
+		const permissionValue = binding.value
+    const hasPermission = (store.getters.roles || []).includes(permissionValue)
+    if (!hasPermission) {
+      el.parentNode && el.parentNode.removeChild(el)
+    }
+	}
+})

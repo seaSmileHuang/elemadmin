@@ -46,10 +46,12 @@ import { ElMessage } from 'element-plus';
 import Cookies from "js-cookie";
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
 const loginFormRef = ref()
 const loginForm = ref<LoginParams>({})
 const route  = useRoute()
 const router = useRouter()
+const store = useStore()
 const loading = ref(false)
 
 watch(route, () => {
@@ -68,7 +70,7 @@ const handleLogin = async () => {
 	await loginFormRef.value?.validate()
 	loading.value = true
 	try {
-		await asyncify(() => LoginApi.login(encrypt(JSON.stringify(loginForm.value))))()
+    await store.dispatch("user/login", encrypt(JSON.stringify(loginForm.value)))
 		if (loginForm.value?.rememberMe) {
 			Cookies.set("username", loginForm.value?.username!, {expires: config.passCookieExpires})
 			Cookies.set("password", loginForm.value?.password!, {expires: config.passCookieExpires})

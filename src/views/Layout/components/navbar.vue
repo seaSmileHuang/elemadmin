@@ -39,23 +39,54 @@
             </el-dropdown-item>
           </router-link>
           <span style="display:block;">
-            <el-dropdown-item divided>
+            <el-dropdown-item divided @click="showModal">
               退出登录
             </el-dropdown-item>
           </span>
         </el-dropdown-menu>
       </el-dropdown>
+      <el-dialog v-model="visible" title="提示">
+        <div>确定注销并退出系统吗</div>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="onCancel">Cancel</el-button>
+            <el-button type="primary" @click="onConfirm">
+              Confirm
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ElMessage } from "element-plus";
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import breadcrumb from "./breadcrumb.vue";
 import hamburger from "./hamburger.vue";
 const store = useStore()
+const router = useRouter()
 const sidebar = computed(() => store.getters.sidebar)
+
+const visible = ref(false)
+const showModal = () => {
+  visible.value = true
+}
+const onCancel = () => {
+  visible.value = false
+}
+
+const onConfirm = async () => {
+  try {
+    await store.dispatch("user/logout")
+    router.replace("/login")
+  } catch(err) {
+    ElMessage.error((err as Error).message)
+  }
+}
 </script>
 <style lang="scss" scoped>
 .navbar {

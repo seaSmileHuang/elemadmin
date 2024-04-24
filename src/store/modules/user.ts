@@ -40,7 +40,7 @@ const user = {
 			setUserInfo(res, commit)
 			
 		},
-		async loginout({commit}) {
+		async logout({commit}) {
 			await asyncify(() => LoginApi.loginout())()
 			commit("SET_ROLES", [])
 			commit("SET_USERS", {})

@@ -86,6 +86,9 @@ button:focus-visible {
   width: 100%;
   box-sizing: border-box
 }
+html {
+  height: 100%;
+}
 
 #app {
   width: 100%;

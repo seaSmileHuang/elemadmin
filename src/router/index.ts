@@ -19,7 +19,8 @@ const router = createRouter({
 
 router.beforeEach(async (to,from,next) => {
   // 判断是否登录
-  if (true) {
+  const isLogin = true
+  if (isLogin) {
     //1、已登录
     if (to.path === '/login') {
       next({path: "/"})
@@ -40,6 +41,13 @@ router.beforeEach(async (to,from,next) => {
         next({...to, replace: true})
       }
 
+    }
+  } else {
+    //未登录
+    if (to.path === "/login") {
+      next()
+    } else {
+      next({path: `/login?redirect=${to.path}`,replace: true})
     }
   }
 })

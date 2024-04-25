@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import Layout from "@/views/Layout/index.vue";
-import Role from "@/views/system/role/index.vue";
-import Menu from "@/views/system/menu/index.vue"
-import Cookies from "js-cookie";
-import {useStore} from "vuex";
-import Dept from "@/views/system/dept/index.vue"
+
 </script>
 
 <template>
   <div class="app">
-    <Dept/>
+    <!-- <Login/> -->
+    <!-- <Dept/> -->
+    <!-- <user/> -->
     <!-- <Role/> -->
     <!-- <Menu/> -->
     <!-- <MenuWrapper/> -->

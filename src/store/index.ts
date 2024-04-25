@@ -26,6 +26,9 @@ const store = createStore({
     },
     tagViews: (state) => {
       return state.app.tagViews
+    },
+    device: (state) => {
+      return state.app.device
     }
   },
   mutations: {

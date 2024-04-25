@@ -1,10 +1,8 @@
-import MenuApi, { IMenuItem } from "@/api/menu"
+import { IMenuItem } from "@/api/menu"
 import router from "@/router"
-import { asyncify } from "@/utils/extractData"
 import Layout from "@/views/Layout/index.vue"
 import { RouteRecordRaw } from "vue-router"
 import { Commit } from "vuex"
-
 type State = {
 	routes: Array<RouteRecordRaw>,
 }
@@ -22,8 +20,41 @@ const permission = {
 	},
 	actions: {
 		getRoutes: async ({commit}: {commit: Commit}) => {
-			const res = await asyncify(() => MenuApi.getUserMenus())()
-			commit("SET_ROUTERS", filterAsyncRouter(res))
+			// const res = await asyncify(() => MenuApi.getUserMenus())()
+			const routes = [
+				{
+					name: "system",
+					path: "/system",
+					id: "1",
+					type: 0,
+					meta: {
+						title: "系统管理"
+					},
+					children: [
+						{
+							name: "user",
+							path: "/system/user",
+							component:"/system/user",
+							meta: {
+								title: "用户管理"
+							},
+							type: 1,
+							id: "2",
+						},
+						{
+							name: "role",
+							path: "/system/role",
+							component: "/system/role",
+							meta: {
+								title: "角色管理"
+							},
+							type: 1,
+							id: 3
+						}
+					]
+				}
+			]
+			commit("SET_ROUTERS", filterAsyncRouter(routes))
 		},
 	}
 }
@@ -36,6 +67,7 @@ export default permission
 const filterAsyncRouter = (menus: IMenuItem[]): Array<RouteRecordRaw> => {
 	return menus.map((menu) => {
 		return {
+			...menu,
 			path: menu.path,
 			name: menu.name,
 			component: menu.component ? lazyComponent(menu.component): Layout,

@@ -3,7 +3,7 @@ import axios, { ResponseRecord } from "./index";
 
 export type IUserItem = {
 	id?: number | string;
-	dept?: {id: number};
+	deptId?: number | string;
 	email:string;
 	gender?: string;
 	nickname: string;
@@ -11,8 +11,8 @@ export type IUserItem = {
 	phone: string;
 	username: string;
 	enabled: boolean;
-	jobs?: Array<{id: number}>;
-	roles?: Array<{id: number}>;
+	jobIds?: Array<{id: number}>;
+	roleIds?: Array<{id: number}>;
 	
 }
 export type IUserListDTO = {
@@ -25,6 +25,7 @@ export type IQueyUsersListParams = {
   pageNum?:number;
   pageSize?:number;
 	enabled?:boolean;
+	deptId?: string | number;
 }
 
 export type IUserInfoItem = {
@@ -34,20 +35,20 @@ export type IUserInfoItem = {
 }
 export default {
 	getUsers(params?: IQueyUsersListParams) {
-		return axios.get<ResponseRecord<IUserListDTO>>("/api/users", {
+		return axios.get<ResponseRecord<IUserListDTO>>("/api/user/list", {
 			params
 		})
 	},
 	addUser(params: IUserItem) {
-		return axios.post("/api/users", params)
+		return axios.post("/api/user/save", params)
 	},
 	editUser(params: IUserItem) {
-		return axios.put("/api/users", params)
+		return axios.post("/api/user/update", params)
 	},
 	deleteUsers(id: string | number) {
-		return axios.delete("/api/users", {
-			data: {
-				ids: [id]
+		return axios.get("/api/user/delete", {
+			params: {
+				id
 			}
 		})
 	},

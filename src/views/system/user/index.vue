@@ -12,10 +12,12 @@
           />
         </div>
         <el-tree
+          node-key="id"
           :load="getDeptDatas"
           :props="defaultProps"
           :expand-on-click-node="false"
           lazy
+          @node-click="(data: IDeptItem) => deptIdChange(data.id)"
         />
       </el-col>
       <!--用户数据-->
@@ -49,7 +51,7 @@
         </div>
 
         <!--表格渲染-->
-        <el-table ref="table" v-loading="loading" :data="users" style="width: 100%;" @row-click="onTableRowClick">
+        <el-table v-loading="loading" :data="users" style="width: 100%;" @row-click="onTableRowClick">
           <el-table-column type="selection" width="55" />
           <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名" />
           <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />
@@ -58,7 +60,7 @@
           <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱" />
           <el-table-column :show-overflow-tooltip="true" prop="dept" label="部门">
             <template v-slot="scope">
-              <div>{{ scope.row.dept.name }}</div>
+              <div>{{ scope.row?.dept?.name }}</div>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center" prop="enabled">
@@ -74,15 +76,15 @@
           <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期" />
 					<el-table-column label="操作" width="130px" align="center" fixed="right">
             <template v-slot="scope">
-              <ElButton v-permission="AuthFunction.编辑用户" @click="() => onEdiorUser(scope.row)">编辑</ElButton>
-              <ElButton v-permission="AuthFunction.删除用户" @click="() => onDeleteUser(scope.row.id)">删除</ElButton>
+              <ElButton  @click="() => onEdiorUser(scope.row)">编辑</ElButton>
+              <ElButton @click="() => onDeleteUser(scope.row.id)">删除</ElButton>
             </template>
           </el-table-column>
         </el-table>
         <!--分页组件-->
         <pagination />
-				<el-dialog v-model="isShowTipModal" title="提示">
-					<div>此操作将禁用test，是否继续</div>
+				<el-dialog v-model="isShowTipModal" title="提示" >
+					<div>此操作将{{curActiveItem?.enabled === EnableEnum.激活 ? '禁用':'激活'}} {{curActiveItem?.username}}，是否继续</div>
 					<template #footer>
 						<div class="dialog-footer">
 							<el-button @click="onCancel">Cancel</el-button>
@@ -93,7 +95,7 @@
       		</template>
 				</el-dialog>
       </el-col>
-      <add-user-modal v-model:visible="isShowAddUser" :formValue="curActiveItem" :mode="mode" @onConfirm="onConfirm"/>
+      <add-user-modal v-model:visible="isShowAddUser"  :formValue="curActiveItem" :mode="mode" @onConfirm="closeUserModal"/>
     </el-row>
 </template>
 
@@ -117,13 +119,18 @@ const {	pageSize,
     setCurActiveItem,
 		mode} = usePage<IUserItem>()
 
+
+ const EnableEnum = {
+  激活: true,
+  禁用: false
+}
 const enabledTypeOptions = [
 	{
-		key: true,
+		key: EnableEnum.激活,
 		display_name: "激活"
 	},
 	{
-		key: false,
+		key: EnableEnum.禁用,
 		display_name: "禁用"
 	}
 ]
@@ -135,11 +142,18 @@ const query = ref<IQueyUsersListParams>({
   pageSize: pageSize.value
 })
 const defaultProps = {
-  label: "title",
+  label: "name",
 }
 
+const deptIdChange = (deptId?: string | number) => {
+  console.log("hjhjj")
+  if (!deptId) return
+  query.value.deptId = deptId
+}
 watch(query,(newValue) => {
   getAllUsers(newValue)
+}, {
+  deep: true
 })
 
 const users = ref<IUserItem[]>([])
@@ -147,6 +161,7 @@ const getAllUsers = async (query?: IQueyUsersListParams) => {
   try {
     const res = await asyncify(() => UserApi.getUsers(query))()
     users.value = res.records || []
+    console.log("res.record", res.records)
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
@@ -155,6 +170,9 @@ getAllUsers()
 
 const operations = ref({
   toAdd() {
+    curActiveItem.value = undefined
+    mode.value = ModeEnum.ADD
+
     setShowAddUser(true)
   },
   doExport() {
@@ -167,6 +185,11 @@ const setShowAddUser = (flag: boolean) => {
   isShowAddUser.value = flag
 }
 
+const closeUserModal = () => {
+  isShowAddUser.value = false;
+  getAllUsers()
+}
+
 const onEdiorUser = (item: IUserItem) => {
   mode.value = ModeEnum.EDIT
   curActiveItem.value = item
@@ -175,7 +198,8 @@ const onEdiorUser = (item: IUserItem) => {
 
 const onDeleteUser = async (id: number|string) => {
   try {
-    await asyncify(() => UserApi.deleteUsers(id))
+    await asyncify(() => UserApi.deleteUsers(id))()
+    getAllUsers()
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
@@ -190,6 +214,7 @@ const onCancel = () => {
 	isShowTipModal.value = false
 }
 const onConfirm = async () => {
+  
 	if (!curActiveItem.value) return
 	const beforeEnabled = curActiveItem.value.enabled
 	try {

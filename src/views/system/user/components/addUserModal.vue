@@ -14,12 +14,12 @@
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" />
             </el-form-item>
-            <el-form-item label="部门" prop="dept">
-              <el-tree-select v-model="form.dept" node-key="id" lazy :load="loadDept" style="width: 450px;" :props="deptProps" :expand-on-click-node="false" check-on-click-node check-strictly></el-tree-select>
+            <el-form-item label="部门" prop="deptId">
+              <el-tree-select v-model="form.deptId" node-key="id" lazy :load="loadDept" style="width: 450px;" :props="deptProps" :expand-on-click-node="false" check-on-click-node check-strictly></el-tree-select>
             </el-form-item>
-            <el-form-item label="岗位" prop="jobs">
+            <el-form-item label="岗位" prop="jobIds">
               <el-select
-                v-model="form.jobs"
+                v-model="form.jobIds"
                 style="width: 178px"
                 multiple
                 placeholder="请选择"
@@ -34,8 +34,8 @@
             </el-form-item>
             <el-form-item label="性别">
               <el-radio-group v-model="form.gender" style="width: 178px">
-                <el-radio value="man">男</el-radio>
-                <el-radio value="woman">女</el-radio>
+                <el-radio value="男">男</el-radio>
+                <el-radio value="女">女</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="状态">
@@ -47,9 +47,9 @@
                 >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item style="margin-bottom: 0;" label="角色" prop="roles">
+            <el-form-item style="margin-bottom: 0;" label="角色" prop="roleIds">
               <el-select
-                v-model="form.roles"
+                v-model="form.roleIds"
                 style="width: 437px"
                 multiple
                 placeholder="请选择"
@@ -135,8 +135,12 @@ const title = props.mode === "ADD" ? "新增部门":'编辑部门'
 
 const form = ref<IUserItem>({...props.formValue} as IUserItem)
 
-watch(() => props.formValue, (newValue) => {
-  form.value = newValue as IUserItem
+watch(() => props.visible, (newValue) => {
+  console.log("变化了", props.formValue)
+  if (newValue) {
+    form.value = {...props.formValue} as IUserItem
+  }
+  
 })
 
 const roles = ref<IRoleItem[]>([])
@@ -145,7 +149,7 @@ const getRoles = async () => {
     const res = await asyncify(() => RoleApi.getRoles())()
     roles.value = res.records || []
   } catch(err) {
-    ElMessage.error((err as Error).message ?? '删除失败')
+    ElMessage.error((err as Error).message ?? '获取角色列表失败')
   }
 }
 getRoles()
@@ -153,9 +157,9 @@ const jobs = ref<IJobItem[]>([])
 const getJobs = async () => {
   try {
     const res = await asyncify(() => JobApi.getJobs())()
-    jobs.value = res || []
+    jobs.value = res.records || []
   } catch(err) {
-    ElMessage.error((err as Error).message ?? '删除失败')
+    ElMessage.error((err as Error).message ?? '获取岗位列表失败')
   }
 }
 getJobs()
@@ -169,10 +173,10 @@ const onConfirm = async () => {
   try {
     // 新增
     if (props.mode === "ADD") {
-      await UserApi.addUser(form.value)
+      await asyncify(() => UserApi.addUser(form.value))()
     } else {
       // 编辑
-      await UserApi.editUser(form.value)
+      await asyncify(() => UserApi.editUser(form.value))()
     }
     emits("onConfirm")
   } catch(err) {

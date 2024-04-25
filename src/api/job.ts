@@ -16,10 +16,14 @@ export type IJobItem = {
 	subCount?: number;
 }
 
+export type IJobResp = {
+	total?: number;
+	records: IJobItem[]
+}
 
 export default {
 	getJobs(params?: IQueyJobsListParams) {
-		return axios.get<ResponseRecord<IJobItem[]>>("/api/job/list", {
+		return axios.get<ResponseRecord<IJobResp>>("/api/job/list", {
 			params
 		})
 	},

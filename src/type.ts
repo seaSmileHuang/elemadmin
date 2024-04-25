@@ -15,3 +15,10 @@ export enum AuthFunction {
   新增菜单 = "menu:add",
   编辑菜单 = "menu:edit"
 }
+
+
+export enum MenuTypeEnum {
+  DIRECTORY = 0,
+  MENU = 1,
+  BUTTON = 2,
+}

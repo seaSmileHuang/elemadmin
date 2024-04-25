@@ -6,7 +6,7 @@ type State = {
 	sidebar: {
 		opened: boolean
 	},
-	tagsView: RouteRecordRaw[]
+	tagViews: RouteRecordRaw[]
 }
 const app = {
 	state(){
@@ -14,7 +14,7 @@ const app = {
 			sidebar: {
 				opened: Cookies.get("sidebarStatus") ? !!Cookies.get("sidebarStatus") :true,
 			},
-			tagsView:[]
+			tagViews:[]
 		}
 
 	},
@@ -28,12 +28,12 @@ const app = {
 			}
 		},
 		ADD_TAG_VIEW(state: State, tag: RouteRecordRaw) {
-			state.tagsView.push(tag)
+			state.tagViews.push(tag)
 		},
 		DELETE_TAG_VIEW(state: State, tag:RouteRecordRaw){
-			const index = state.tagsView.findIndex((item) => tag.path === item.path)
+			const index = state.tagViews.findIndex((item) => tag.path === item.path)
 			if (index !== -1) {
-				state.tagsView.splice(index, 1)
+				state.tagViews.splice(index, 1)
 			}
 		}
 	},

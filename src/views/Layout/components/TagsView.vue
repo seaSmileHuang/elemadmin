@@ -1,24 +1,31 @@
 <template>
-	<div class="tags-view-wrapper">
-		<div v-for="tag in tagViews" class="tags-view-item">
-			<route-link :to="tag.path" tag="span">
-				{{ tag.name }}
-				<span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"></span>
-			</route-link>
-	</div>
+	<div class="tags-view-container">
+		<div class="tags-view-wrapper">
+			<div v-for="(tag, index) in tagViews" :class="{'tags-view-item': true, 'active': activeView?.path === tag.path}" @click="() => changeActiveItem(tag)">
+				<router-link :to="tag.path" :custom="true">
+          <span>
+            {{ tag.meta?.title }}
+					  <span v-if="index" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)">X</span>
+          </span>
+
+				</router-link>
+			</div>
+		</div>
 	</div>
 
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue';
-import { RouteRecordRaw, useRouter } from 'vue-router';
+import { computed, ref, watch } from 'vue';
+import { RouteRecordRaw, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 const store = useStore()
-const route  = useRouter()
-const tagViews = computed(() => store.getters.tagViews)
+const route  = useRoute()
+const tagViews= computed<RouteRecordRaw[]>(() => store.getters.tagViews)
 
-watch(route, async () => {
+const activeView = ref()
+watch(() => route.path, async () => {
+	console.log("进来了", route)
 	if (tagViews.value?.[0]?.name !== "home") {
 		await store.dispatch("addTagViews", {
 			name: "home",
@@ -28,16 +35,98 @@ watch(route, async () => {
 			}
 		})
 	}
-	await store.dispatch("addTagViews", route)
+	activeView.value = route
+	if ((tagViews.value || []).findIndex((tag) => tag.path === route.path) !== -1) {
+		// 已有导航，无需再次添加
+		return;
+	}
+	await store.dispatch("addTagViews", {...route})
 }, {
 	immediate: true
 })
 
-const closeSelectedTag = (route:RouteRecordRaw) => {
-	store.dispatch("deleteTagView", route)
+const closeSelectedTag = async (route:RouteRecordRaw) => {
+	await store.dispatch("deleteTagView", route)
+	if (activeView.value?.path === route.path) {
+		// 设置为最后一个
+		const tags = tagViews.value || []
+		activeView.value = tags[tags.length -1]
+	}
+}
+
+const changeActiveItem = (tag: RouteRecordRaw) => {
+	activeView.value = tag
 }
 </script>
 
+
+<style lang="scss" scoped>
+.tags-view-container {
+  height: 34px;
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #d8dce5;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  .tags-view-wrapper {
+    .tags-view-item {
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      height: 26px;
+      line-height: 26px;
+      border: 1px solid #d8dce5;
+      color: #495060;
+      background: #fff;
+      padding: 0 8px;
+      font-size: 12px;
+      margin-left: 5px;
+      margin-top: 4px;
+      &:first-of-type {
+        margin-left: 15px;
+      }
+      &:last-of-type {
+        margin-right: 15px;
+      }
+      &.active {
+        background-color: #42b983;
+        color: #fff;
+        border-color: #42b983;
+        &::before {
+          content: '';
+          background: #fff;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          position: relative;
+          margin-right: 2px;
+        }
+      }
+    }
+  }
+  .contextmenu {
+    margin: 0;
+    background: #fff;
+    z-index: 3000;
+    position: absolute;
+    list-style-type: none;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+    li {
+      margin: 0;
+      padding: 7px 16px;
+      cursor: pointer;
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 //reset element css of el-icon-close

@@ -32,6 +32,7 @@ router.beforeEach(async (to,from,next) => {
         await store.dispatch("getRoutes")
         /** 添加动态路由 */
         console.log("store.getters.routers", store.getters.routes)
+
         addRoutes((store.getters.routes || []).concat({
           path: "/:pathMatch(.*)",
           redirect: "/404"

@@ -41,11 +41,11 @@
             <el-radio-button label="true">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="form.type !== 2" label="菜单标题" prop="title">
-          <el-input v-model="form.title" :style=" form.type === 0 ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
+        <el-form-item v-if="form.type !== 2" label="菜单标题" prop="meta.title">
+          <el-input v-model="form.meta.title" :style=" form.type === 0 ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
         </el-form-item>
-        <el-form-item v-if="form.type === 2" label="按钮名称" prop="title">
-          <el-input v-model="form.title" placeholder="按钮名称" style="width: 178px;" />
+        <el-form-item v-if="form.type === 2" label="按钮名称" prop="meta.title">
+          <el-input v-model="form.meta.title" placeholder="按钮名称" style="width: 178px;" />
         </el-form-item>
         <el-form-item v-show="form.type !== 0" label="权限标识" prop="permission">
           <el-input v-model="form.permission" :disabled="form.iFrame" placeholder="权限标识" style="width: 178px;" />
@@ -56,8 +56,8 @@
         <el-form-item label="菜单排序" prop="menuSort">
           <el-input-number v-model.number="form.menuSort" :min="0" :max="999" controls-position="right" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-show="form.type === 1" label="菜单名称" prop="meta.name">
-          <el-input v-model="form.meta.name" style="width: 178px;" placeholder="匹配组件内Name字段" />
+        <el-form-item v-show="form.type === 1" label="菜单名称" prop="name">
+          <el-input v-model="form.name" style="width: 178px;" placeholder="匹配组件内Name字段" />
         </el-form-item>
         <el-form-item v-show="form.type === 1" label="组件路径" prop="component">
           <el-input v-model="form.component" style="width: 178px;" placeholder="组件路径" />
@@ -96,7 +96,8 @@ const props = defineProps({
     default: () => ({
       type: 1,
       hidden: false,
-      iFrame: false
+      iFrame: false,
+      meta: {}
     })
 	},
   mode: {
@@ -118,7 +119,8 @@ const title = props.mode === "ADD" ? "新增菜单":'编辑菜单'
 const form = ref<IMenuItem>({...props.formValue} as IMenuItem || {
   type: 1,
   hidden: false,
-  iFrame: false
+  iFrame: false,
+  meta: {}
 })
 
 const rules: any[] = []

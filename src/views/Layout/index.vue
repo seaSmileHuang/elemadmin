@@ -4,7 +4,10 @@
     	<div class="main-container">
 				<navbar/>
 				<tags-view />
-				<router-view></router-view>
+				<div class="main-wrapper">
+					<router-view></router-view>
+				</div>
+				
 			</div>
 
 
@@ -14,6 +17,7 @@
 import MenuWrapper from "@/views/Layout/components/menu/MenuWrapper.vue";
 import { computed } from "vue";
 import { useStore } from "vuex";
+import TagsView from "./components/TagsView.vue";
 import navbar from "./components/navbar.vue";
 const store = useStore()
 const onClick = () => {
@@ -31,9 +35,8 @@ const collapsed = computed(() => store.getters.sidebar.opened)
 }
 .main-container {
 	flex: 1;
-	height: 100%;
 	max-height: 100%;
-	overflow: scroll;
+	overflow-y: auto;
 }
 @media (max-width: 992px) {
 	.sidebar-container {
@@ -42,6 +45,9 @@ const collapsed = computed(() => store.getters.sidebar.opened)
 	}
 }
 .sidebar-container.hide-side-bar {
+}
+.main-wrapper {
+	padding: 20px 20px 45px 20px;
 }
 
 </style>

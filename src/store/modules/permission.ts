@@ -27,6 +27,7 @@ const permission = {
 					path: "/system",
 					id: "1",
 					type: 0,
+					icon: "app",
 					meta: {
 						title: "系统管理"
 					},
@@ -40,6 +41,7 @@ const permission = {
 							},
 							type: 1,
 							id: "2",
+							icon: "app",
 						},
 						{
 							name: "role",
@@ -49,7 +51,8 @@ const permission = {
 								title: "角色管理"
 							},
 							type: 1,
-							id: 3
+							id: 3,
+							icon: "app",
 						}
 					]
 				}

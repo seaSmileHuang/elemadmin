@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger id="hamburger-container" :is-active="opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
@@ -9,7 +9,7 @@
         <!-- <search id="header-search" class="right-menu-item" /> -->
 
         <el-tooltip content="项目文档" effect="dark" placement="bottom">
-          <div class="right-menu-item hover-effect" >项目文档</div>
+          <el-icon class="right-menu-item hover-effect" ><Document /></el-icon>
         </el-tooltip>
 
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
@@ -72,8 +72,11 @@ import breadcrumb from "./breadcrumb.vue";
 import hamburger from "./hamburger.vue";
 const store = useStore()
 const router = useRouter()
-const sidebar = computed(() => store.getters.sidebar)
+const opened = computed(() => store.getters.sidebar.opened)
 
+const toggleSideBar = () => {
+  store.dispatch("toggleSidebar")
+}
 const visible = ref(false)
 const showModal = () => {
   visible.value = true

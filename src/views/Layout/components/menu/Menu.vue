@@ -3,7 +3,7 @@
     <template v-if="item.type === MenuTypeEnum.DIRECTORY">
         <el-sub-menu :key="item.id" :value="item.path" :title="item.name">
           <template #title>
-            <el-icon v-if="item.icon" :name="item.icon" />
+            <svg-icon v-if="item.icon" :icon-class="item.icon" style="width: 32px;height: 16px"/>
             <span>{{item.meta.title}}</span>
           </template>
           <Menu :menu="item.children" />
@@ -14,7 +14,7 @@
     <template v-else-if="item.type === MenuTypeEnum.MENU">
         <el-menu-item :key="item.id" :value="item.path" @click="() => onClick(item)">
           <template v-if="item.icon">
-            <el-icon :name="item.icon" />
+            <svg-icon :icon-class="item.icon" style="width: 32px;height: 16px"/>
           </template>
           <template #title>{{item.meta.title}}</template>
         </el-menu-item>
@@ -25,11 +25,11 @@
 
 <script setup lang="ts">
 import { IMenuItem } from "@/api/menu";
+import SvgIcon from "@/components/SvgIcon.vue";
 import { MenuTypeEnum } from "@/type.ts";
 import { PropType } from "vue";
 import { useRouter } from "vue-router";
 import Menu from "./Menu.vue";
-
 const props = defineProps({
   menu: {
     type: Array as PropType<IMenuItem[]>,

@@ -10,18 +10,25 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-show="form.type !== 2" label="菜单图标" prop="icon">
-          <!-- <el-popover
+          <el-popover
             placement="bottom-start"
             width="450"
             trigger="click"
-            @show="$refs['iconSelect'].reset()"
           >
             <IconSelect ref="iconSelect" @selected="selected" />
-            <el-input slot="reference" v-model="form.icon" style="width: 450px;" placeholder="点击选择图标" readonly>
-              <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" class="el-input__icon" style="height: 32px;width: 16px;" />
-              <i v-else slot="prefix" class="el-icon-search el-input__icon" />
-            </el-input>
-          </el-popover> -->
+            <template #reference>
+              <el-input  v-model="form.icon" style="width: 450px;" placeholder="点击选择图标" readonly>
+                <template #prefix>
+                  <svg-icon v-if="form.icon" :icon-class="form.icon" class="el-input__icon" style="height: 32px;width: 16px;" />
+                  <el-icon  v-else> 
+                    <Search/>
+                  </el-icon>
+                </template>
+                
+              </el-input>
+            </template>
+
+          </el-popover>
         </el-form-item>
         <el-form-item v-show="form.type !== 2" label="外链菜单" prop="iFrame">
           <el-radio-group v-model="form.iFrame" size="mini">
@@ -79,10 +86,12 @@
 </template>
 <script setup lang="ts">
 import MenuApi, { IMenuItem } from "@/api/menu";
+import SvgIcon from "@/components/SvgIcon.vue";
 import { asyncify } from "@/utils/extractData";
 import { ElMessage } from "element-plus";
 import type Node from 'element-plus/es/components/tree/src/model/node';
 import { ref } from 'vue';
+import IconSelect from "./IconSelect/index.vue";
 const emits = defineEmits(["update:visible", "onConfirm"])
 const formRef = ref()
 
@@ -163,5 +172,9 @@ const load = (node: Node,resolve: (arg0: IMenuItem[]) => void) => {
   }))().then((res) => {
     resolve(res.map((item) => ({...item, isLeaf: !item.subCount})))
   })
+}
+
+const selected = (icon: string) => {
+  form.value.icon = icon
 }
 </script>

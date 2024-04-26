@@ -6,18 +6,18 @@
 
     <div class="right-menu">
       <div class="right-menu-btn">
-        <search id="header-search" class="right-menu-item" />
+        <!-- <search id="header-search" class="right-menu-item" /> -->
 
         <el-tooltip content="项目文档" effect="dark" placement="bottom">
-          <div class="right-menu-item hover-effect" ></div>
+          <div class="right-menu-item hover-effect" >项目文档</div>
         </el-tooltip>
 
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
-          <div id="screenfull" class="right-menu-item hover-effect" ></div>
+          <el-icon class="right-menu-item hover-effect" @click="fullScreen"><FullScreen /></el-icon>
         </el-tooltip>
 
         <el-tooltip content="布局设置" effect="dark" placement="bottom">
-          <div id="size-select" class="right-menu-item hover-effect"></div>
+          <div id="size-select" class="right-menu-item hover-effect">布局设置</div>
         </el-tooltip>
 
       </div>
@@ -25,28 +25,31 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img src="" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <el-icon><CaretBottom /></el-icon>
         </div>
-        <el-dropdown-menu slot="dropdown">
-          <span style="display:block;" >
-            <el-dropdown-item>
-              布局设置
-            </el-dropdown-item>
-          </span>
-          <router-link to="/user/center">
-            <el-dropdown-item>
-              个人中心
-            </el-dropdown-item>
-          </router-link>
-          <span style="display:block;">
-            <el-dropdown-item divided @click="showModal">
-              退出登录
-            </el-dropdown-item>
-          </span>
-        </el-dropdown-menu>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <span style="display:block;" >
+              <el-dropdown-item>
+                布局设置
+              </el-dropdown-item>
+            </span>
+            <router-link to="/user/center">
+              <el-dropdown-item>
+                个人中心
+              </el-dropdown-item>
+            </router-link>
+            <span style="display:block;">
+              <el-dropdown-item divided @click="showModal">
+                退出登录
+              </el-dropdown-item>
+            </span>
+          </el-dropdown-menu>
+        </template>
+
       </el-dropdown>
-      <el-dialog v-model="visible" title="提示">
-        <div>确定注销并退出系统吗</div>
+      <el-dialog append-to-body v-model="visible" title="提示" :width="400">
+        <span>确定注销并退出系统吗</span>
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="onCancel">Cancel</el-button>
@@ -87,6 +90,14 @@ const onConfirm = async () => {
     ElMessage.error((err as Error).message)
   }
 }
+
+const fullScreen = () => {
+  if (document.fullscreenElement) {
+    document.exitFullscreen()
+  } else {
+    document.documentElement.requestFullscreen()
+  }
+}
 </script>
 <style lang="scss" scoped>
 .navbar {
@@ -118,6 +129,9 @@ const onConfirm = async () => {
     vertical-align: top;
   }
 
+  .right-menu-btn {
+    display: inline-block;
+  }
   .right-menu {
     float: right;
     height: 100%;
@@ -133,7 +147,7 @@ const onConfirm = async () => {
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
-      vertical-align: text-bottom;
+      vertical-align: middle;
 
       &.hover-effect {
         cursor: pointer;

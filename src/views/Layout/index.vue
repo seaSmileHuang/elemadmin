@@ -26,7 +26,7 @@ const onClick = () => {
 	store.commit("TOGGLE_SIDEBAR")
 }
 
-const collapsed = computed(() => store.getters.sidebar.opened)
+const collapsed = computed(() => !store.getters.sidebar.opened)
 const device = computed(() => store.getters.device)
 
 window.addEventListener("resize", () => {

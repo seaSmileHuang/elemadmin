@@ -3,10 +3,8 @@
 		<div class="tags-view-wrapper">
 			<div v-for="(tag, index) in tagViews" :class="{'tags-view-item': true, 'active': activeView?.path === tag.path}" @click="() => changeActiveItem(tag)">
 				<router-link :to="tag.path" :custom="true">
-          <span>
             {{ tag.meta?.title }}
-					  <span v-if="index" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)">X</span>
-          </span>
+            <el-icon v-if="index" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"><Close /></el-icon>
 
 				</router-link>
 			</div>
@@ -99,7 +97,7 @@ const changeActiveItem = (tag: RouteRecordRaw) => {
           height: 8px;
           border-radius: 50%;
           position: relative;
-          margin-right: 2px;
+          margin-right: 4px;
         }
       }
     }
@@ -135,7 +133,7 @@ const changeActiveItem = (tag: RouteRecordRaw) => {
     .el-icon-close {
       width: 16px;
       height: 16px;
-      vertical-align: 2px;
+      vertical-align: text-bottom;
       border-radius: 50%;
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
@@ -152,4 +150,5 @@ const changeActiveItem = (tag: RouteRecordRaw) => {
     }
   }
 }
+
 </style>

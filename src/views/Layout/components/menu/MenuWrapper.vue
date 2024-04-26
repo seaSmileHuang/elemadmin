@@ -4,7 +4,7 @@
     :text-color="menuText"
     :active-text-color="menuActiveText"
     :background-color="menuBg"
-    class="menu" theme="dark" default-value="3-2" height="550px" :collapse="!collapsed">
+    class="menu" theme="dark" default-value="3-2" height="550px" :collapse="collapsed">
       <Menu :menu="menus" />
     </el-menu>
   </div>
@@ -16,7 +16,7 @@ import { useStore } from "vuex";
 import Menu from "./Menu.vue";
 const store = useStore()
 console.log('jjj', store.getters.sidebar)
-const collapsed = computed(() => store.getters.sidebar.opened)
+const collapsed = computed(() => !store.getters.sidebar.opened)
 const menus = computed(() => store.getters.routes)
 // sidebar
 const menuText = '#bfcbd9';

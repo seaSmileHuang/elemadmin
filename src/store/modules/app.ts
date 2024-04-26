@@ -30,8 +30,8 @@ const app = {
 			}
 		},
 		CLOSE_SIDEBAR: (state: State) => {
-			state.sidebar.opened = true;
-			Cookies.set("sidebarStatus", '1')
+			state.sidebar.opened = false;
+			Cookies.set("sidebarStatus", '0')
 		},
 		ADD_TAG_VIEW(state: State, tag: RouteRecordRaw) {
 			state.tagViews.push(tag)

@@ -62,8 +62,4 @@ export default {
 	downloadUsers() {
 		return axios.get("/api/users/download")
 	},
-	/** 获取用户信息 */
-	getUserInfo() {
-		return axios.get<ResponseRecord<IUserInfoItem>>("/api/auth/info")
-	}
 }

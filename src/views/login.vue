@@ -26,7 +26,7 @@
         记住我
       </el-checkbox>
       <el-form-item style="width:100%;">
-        <el-button :loading="loading" size="medium" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
+        <el-button :loading="loading" size="medium" type="primary" style="width:100%;" @click="handleLogin">
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
@@ -70,7 +70,8 @@ const handleLogin = async () => {
 	await loginFormRef.value?.validate()
 	loading.value = true
 	try {
-    await store.dispatch("user/login", encrypt(JSON.stringify(loginForm.value)))
+    // await store.dispatch("user/login", encrypt(JSON.stringify(loginForm.value)))
+    await store.dispatch("login",loginForm.value)
 		if (loginForm.value?.rememberMe) {
 			Cookies.set("username", loginForm.value?.username!, {expires: config.passCookieExpires})
 			Cookies.set("password", loginForm.value?.password!, {expires: config.passCookieExpires})
@@ -82,7 +83,9 @@ const handleLogin = async () => {
 		}
 		if (route.query.redirect) {
 			router.replace({path: route.query.redirect as string})
-		}
+		} else {
+      router.push({path: "/home" })
+    }
 		
 	} catch(err) {
 		ElMessage.error((err as Error).message)

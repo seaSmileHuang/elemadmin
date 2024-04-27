@@ -4,7 +4,7 @@
         <el-sub-menu :key="item.id" :value="item.path" :title="item.name">
           <template #title>
             <svg-icon v-if="item.icon" :icon-class="item.icon" style="width: 32px;height: 16px"/>
-            <span>{{item.meta.title}}</span>
+            <span>{{item.title}}</span>
           </template>
           <Menu :menu="item.children" />
         </el-sub-menu>
@@ -16,7 +16,7 @@
           <template v-if="item.icon">
             <svg-icon :icon-class="item.icon" style="width: 32px;height: 16px"/>
           </template>
-          <template #title>{{item.meta.title}}</template>
+          <template #title>{{item.title}}</template>
         </el-menu-item>
 
     </template>

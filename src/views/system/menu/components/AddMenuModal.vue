@@ -49,10 +49,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="form.type !== 2" label="菜单标题" prop="meta.title">
-          <el-input v-model="form.meta.title" :style=" form.type === 0 ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
+          <el-input v-model="form.title" :style=" form.type === 0 ? 'width: 450px' : 'width: 178px'" placeholder="菜单标题" />
         </el-form-item>
         <el-form-item v-if="form.type === 2" label="按钮名称" prop="meta.title">
-          <el-input v-model="form.meta.title" placeholder="按钮名称" style="width: 178px;" />
+          <el-input v-model="form.title" placeholder="按钮名称" style="width: 178px;" />
         </el-form-item>
         <el-form-item v-show="form.type !== 0" label="权限标识" prop="permission">
           <el-input v-model="form.permission" :disabled="form.iFrame" placeholder="权限标识" style="width: 178px;" />
@@ -106,7 +106,6 @@ const props = defineProps({
       type: 1,
       hidden: false,
       iFrame: false,
-      meta: {}
     })
 	},
   mode: {
@@ -129,7 +128,6 @@ const form = ref<IMenuItem>({...props.formValue} as IMenuItem || {
   type: 1,
   hidden: false,
   iFrame: false,
-  meta: {}
 })
 
 const rules: any[] = []

@@ -22,9 +22,6 @@ export type IMenuItem = {
 	name?: string;
 	children?: IMenuItem[]
 	subCount?: number
-	meta: {
-		title?: string
-	}
 }
 
 

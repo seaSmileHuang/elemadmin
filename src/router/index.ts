@@ -1,11 +1,19 @@
 import store from "@/store";
 import { addRoutes } from "@/store/modules/permission";
+import { getToken } from "@/utils/getToken";
 import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
+import Layout from "@/views/Layout/index.vue";
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },
-  {path: "/home", name: "home", component: () => import("@/views/home.vue"), meta: {
+  {path: "/home", name: "home", component: Layout, meta: {
     title: "首页"
-  }},
+  }, children: [
+    {
+      path: "/",
+      component: () => import("@/views/home.vue"),
+    }
+  ]
+},
   { path: "/404", name: "404", component: () => import("@/views/404.vue") },
   { path: "/401", name: "401", component: () => import("@/views/401.vue") },
   { path: "/login", name: "login", component: () => import("@/views/login.vue")}
@@ -18,9 +26,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to,from,next) => {
+  console.log("beforeEach", to)
   // 判断是否登录
-  const isLogin = true
-  if (isLogin) {
+  if (getToken()) {
     //1、已登录
     if (to.path === '/login') {
       next({path: "/"})
@@ -28,15 +36,12 @@ router.beforeEach(async (to,from,next) => {
       if (store.getters.routes?.length) {
         next()
       } else {
-        // await store.dispatch("GetUserInfo")
+        await store.dispatch("GetUserInfo")
         await store.dispatch("getRoutes")
         /** 添加动态路由 */
         console.log("store.getters.routers", store.getters.routes)
 
-        addRoutes((store.getters.routes || []).concat({
-          path: "/:pathMatch(.*)",
-          redirect: "/404"
-        }))
+        addRoutes((store.getters.routes || []))
         console.log("router", router.getRoutes())
 
         next({...to, replace: true})
@@ -48,7 +53,7 @@ router.beforeEach(async (to,from,next) => {
     if (to.path === "/login") {
       next()
     } else {
-      next({path: `/login?redirect=${to.path}`,replace: true})
+      next({path: '/login', query: {redirect: to.fullPath}})
     }
   }
 })

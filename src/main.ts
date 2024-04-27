@@ -28,7 +28,7 @@ app.directive("permission", {
 	mounted(el, binding) {
 		const permissionValue = binding.value
     const hasPermission = (store.getters.roles || []).includes(permissionValue)
-    if (!hasPermission) {
+    if (!hasPermission && !store.getters.roles.includes("admin")) {
       el.parentNode && el.parentNode.removeChild(el)
     }
 	}

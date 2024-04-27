@@ -87,7 +87,7 @@ const onCancel = () => {
 
 const onConfirm = async () => {
   try {
-    await store.dispatch("user/logout")
+    await store.dispatch("logout")
     router.replace("/login")
   } catch(err) {
     ElMessage.error((err as Error).message)

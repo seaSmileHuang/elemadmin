@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from "./index.ts";
 import { ResponseRecord } from ".";
-import { IUserInfoItem } from "./user";
+import { IUserInfoItem } from "./user.ts";
 
 
 export type LoginParams = {
@@ -16,13 +16,14 @@ export type CodeImageRes = {
 }
 
 export default {
-	login(data: string) {
-		return axios.post<ResponseRecord<IUserInfoItem>>("/api/login", {
-			params: data
-		})
+	login(data: LoginParams) {
+		return axios.post<ResponseRecord<string>>("/api/auth/login", data)
 	},
-	loginout() {
-		return axios.post<ResponseRecord<null>>("/api/auth/logout")
+	logout() {
+		return axios.get<ResponseRecord<null>>("/api/auth/logout")
+	},
+	getUserInfo() {
+		return axios.get<ResponseRecord<IUserInfoItem>>("/api/auth/info")
 	},
 	getCodeImage() {
 		return axios.get<ResponseRecord<CodeImageRes>>("/auth/code")

@@ -14,7 +14,7 @@
             <span class="role-span">角色列表</span>
           </template>
             
-          <el-table ref="table" v-loading="loading" highlight-current-row style="width: 100%;" :data="roles" @row-click="onTableRowClick">
+          <el-table :key="roles" ref="table" v-loading="loading" highlight-current-row style="width: 100%;" :data="roles" @row-click="onTableRowClick">
             <el-table-column type="selection" width="55" />
             <el-table-column prop="name" label="名称" />
             <el-table-column prop="dataScope" label="数据权限" />
@@ -51,9 +51,9 @@
             >保存</el-button>
           </template>
           <el-tree
-            ref="role"
+            ref="roleRef"
             lazy
-            :default-checked-keys="curActiveItem?.menuIds"
+            :default-checked-keys="checkedMenuKeys"
             :load="getMenuData"
             :props="defaultProps"
             check-strictly
@@ -103,6 +103,7 @@ watch(query,(newValue) => {
 const onConfirm = () => {
   getAllRoles()
   setShowAddRole(false)
+  ElMessage.success('添加成功')
 }
 const roles = ref<IRoleItem[]>([])
 const getAllRoles = async (query?: IQueyRolesListParams) => {
@@ -110,7 +111,7 @@ const getAllRoles = async (query?: IQueyRolesListParams) => {
     const res = await asyncify(() => RoleApi.getRoles(query))()
     roles.value = res.records || []
   } catch(err) {
-    ElMessage.error((err as Error).message ?? '删除失败')
+    ElMessage.error((err as Error).message ?? '获取角色列表失败')
   }
 }
 getAllRoles()
@@ -118,6 +119,8 @@ getAllRoles()
 const operations = ref({
   toAdd() {
     setShowAddRole(true)
+    mode.value = ModeEnum.ADD
+    curActiveItem.value = undefined
   },
   doExport() {
     downloadApi(() => RoleApi.downloadRoles())
@@ -139,6 +142,7 @@ const onDeleteRole = async (id: number|string) => {
   try {
     await asyncify(() => RoleApi.deleteRoles(id))()
     getAllRoles()
+    ElMessage.success('删除成功')
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
@@ -162,14 +166,12 @@ const onTableRowClick = (row: IRoleItem) => {
   setCurActiveItem(row)
   
 }
+const roleRef = ref()
 watch(curActiveItem, async (newValue, beforeValue) => {
   if (!newValue || !newValue.id || newValue?.id === beforeValue?.id) return;
   const detail = await asyncify(() => RoleApi.roleDetail(newValue.id!))()
   checkedMenuKeys.value = detail.menuIds || []
-  setCurActiveItem({
-    ...newValue,
-    menuIds: detail.menuIds
-  })
+  roleRef.value?.setCheckedKeys(detail.menuIds || [])
 })
 
 const showButton = computed(() => !!curActiveItem.value)
@@ -182,6 +184,7 @@ const saveRole = async () => {
   }
   try {
    await asyncify(() => RoleApi.roleBindMenu(params))()
+   ElMessage.success("保存成功")
   }catch(err) {
     ElMessage.error((err as Error).message)
   }

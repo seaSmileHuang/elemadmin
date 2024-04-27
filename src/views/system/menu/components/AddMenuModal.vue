@@ -143,10 +143,10 @@ const onConfirm = async () => {
   try {
     // 新增
     if (props.mode === "ADD") {
-      await MenuApi.addMenu(form.value)
+      await asyncify(() => MenuApi.addMenu(form.value))()
     } else {
       // 编辑
-      await MenuApi.editMenu(form.value)
+      await asyncify(() => MenuApi.editMenu(form.value))()
     }
     emits("onConfirm")
   } catch(err) {

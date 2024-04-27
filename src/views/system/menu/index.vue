@@ -9,6 +9,7 @@
     <add-menu-modal v-model:visible="isShowAddMenu" v-if="isShowAddMenu" :formValue="formValue" :mode="mode" @onConfirm="onConfirm"/>
     <!--表格渲染-->
     <el-table
+      :key="menus"
       ref="table"
       v-loading="listLoding"
       lazy
@@ -53,7 +54,7 @@
       <el-table-column label="操作" width="130px" align="center" fixed="right">
         <template v-slot="scope">
           <ElButton v-permission="AuthFunction.编辑菜单" @click="() => onEdiorMenu(scope.row)">编辑</ElButton>
-          <ElButton v-permission="AuthFunction.删除菜单" @click="() => onDeleteMenu(scope.row.id)">删除</ElButton>
+          <ElButton v-permission="AuthFunction.删除菜单" @click="() => onDeleteMenu(scope.row)">删除</ElButton>
         </template>
       </el-table-column>
     </el-table>
@@ -76,17 +77,20 @@ const getMenus = (tree:IMenuItem, _treeNode:unknown, resolve: (data:IMenuItem[])
 	const params = {pid: tree.id}
 	asyncify(() => MenuApi.getMenus(params))().then((res) => {
     resolve(res)
+    // tree.children = res
   })
 }
 const onConfirm = () => {
   getAllMenus()
   isShowAddMenu.value = false
+  ElMessage.success("操作成功")
 }
 
 const menus = ref<IMenuItem[]>([])
 const listLoding = ref(false)
-const table = ref()
+const tableRef = ref()
 const getAllMenus = async (query?: IQueyMenusListParams) => {
+  menus.value = []
   try {
     listLoding.value = true
     const res = await asyncify(() => MenuApi.getMenus(query))()
@@ -110,6 +114,8 @@ watch(query,(newValue) => {
 const operations = ref({
   toAdd() {
     setShowAddMenu(true)
+    mode.value = ModeEnum.ADD
+    formValue.value = undefined
   },
   doExport() {
     downloadApi(() => MenuApi.downloadMenus())
@@ -129,14 +135,40 @@ const onEdiorMenu = (item: IMenuItem) => {
   setShowAddMenu(true)
 }
 
-const onDeleteMenu = async (id: number|string) => {
+const onDeleteMenu = async (item: IMenuItem) => {
   try {
-    await asyncify(() => MenuApi.deleteMenus(id))()
+    await asyncify(() => MenuApi.deleteMenus(item.id))()
+    // debugger
+    // const pMenu = getParentMenu(menus.value, item.pid!)
+    // if (pMenu) {
+    //   pMenu?.children?.splice((pMenu.children || []).findIndex((menu: IMenuItem) => menu.id === item.id), 1)
+    // } else {
+    //   menus.value.splice(menus.value.findIndex((menu: IMenuItem) => menu.id === item.id), 1)
+    // }
+    
+    // //  const pMenu = menus.value.find(menu => menu.id === item.pid)
+    // //  pMenu?.children?.splice(pMenu.children.findIndex(menu => menu.id === item.id), 1)
     getAllMenus()
+    ElMessage.success('删除成功')
   } catch(err) {
     ElMessage.error((err as Error).message ?? '删除失败')
   }
   
+}
+const getParentMenu = (menus: IMenuItem[], pid: string | number) : IMenuItem | undefined=> {
+  if (pid === 0) return undefined
+  if (!menus?.length) return undefined
+  for (let i = 0; i < menus.length; i++) {
+    if(menus[i].id === pid) {
+      return menus[i]
+    } else {
+      const foundInChildren  = getParentMenu(menus[i]?.children || [], pid)
+      if (foundInChildren  !== undefined) {
+        return foundInChildren 
+      }
+    }
+  }
+  return undefined;
 }
 
 </script>

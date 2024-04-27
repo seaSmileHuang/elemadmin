@@ -2,7 +2,7 @@
     <div>
       <OperationBtn :operations="operations"/>
       <add-job-modal v-model:visible="isShowAddJob"  v-if="isShowAddJob" :formValue="curActiveItem" :mode="mode" @onConfirm="onConfirm"/>
-        <el-table ref="table" v-loading="loading" :data="jobs" style="width: 100%;" @node-click="onTableRowClick">
+        <el-table :key="jobs" ref="table" v-loading="loading" :data="jobs" style="width: 100%;" @node-click="onTableRowClick">
             <el-table-column type="selection" width="55" />
             <el-table-column prop="name" label="名称" />
             <el-table-column prop="jobSort" label="排序">
@@ -83,6 +83,8 @@ getAllJobs()
 const operations = ref({
   toAdd() {
     setShowAddJob(true)
+    mode.value = ModeEnum.ADD
+    curActiveItem.value = undefined
   },
   doExport() {
     downloadApi(() => JobApi.downloadJobs())

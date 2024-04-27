@@ -26,7 +26,7 @@
             </el-radio-group>
         </el-form-item>
         <el-form-item v-if="!form.isTop" style="margin-bottom: 0;" label="上级部门" prop="pid">
-            <el-tree-select v-model="form.pid" node-key="id" lazy :load="load" style="width: 450px;" :props="deptProps" :expand-on-click-node="false" check-on-click-node check-strictly></el-tree-select>
+            <el-tree-select v-model="form.pid" node-key="id" lazy :load="load" style="width: 370px;" :props="deptProps" :expand-on-click-node="false" check-on-click-node check-strictly></el-tree-select>
         </el-form-item>
       </el-form>
       <template #footer>

@@ -60,6 +60,9 @@ export default {
 		})
 	},
 	downloadUsers() {
-		return axios.get("/api/users/download")
+		return axios.get("/api/user/download", {
+			responseType: "blob"
+
+		})
 	},
 }

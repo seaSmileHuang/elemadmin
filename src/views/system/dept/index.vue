@@ -4,6 +4,7 @@
         <add-dept-modal v-model:visible="isShowAddDept"  v-if="isShowAddDept" :formValue="curActiveItem" :mode="mode" @onConfirm="onConfirm"/>
         <!--表格渲染-->
         <el-table
+        :key="depts"
         ref="table"
         v-loading="loading"
         lazy
@@ -85,6 +86,8 @@ getAllDepts()
 const operations = ref({
   toAdd() {
     setShowAddDept(true)
+    mode.value = ModeEnum.ADD
+    curActiveItem.value = undefined
   },
   doExport() {
     downloadApi(() => DeptApi.downloadDepts())

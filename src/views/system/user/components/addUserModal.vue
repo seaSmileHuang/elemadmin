@@ -188,7 +188,7 @@ const onConfirm = async () => {
 const loadDept = (node: Node, resolve: (data: IDeptItem[]) => void) => {
   const pid = node.level === 0 ? 0 : node.key
   asyncify(() => DeptApi.getDepts({pid}))().then((res) => {
-    resolve(res)
+    resolve((res || []).map((dept) => ({...dept, isLeaf: !dept.subCount})))
   })
 }
 

@@ -15,10 +15,11 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { RouteRecordRaw, useRoute } from 'vue-router';
+import { RouteRecordRaw, useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 const store = useStore()
 const route  = useRoute()
+const router = useRouter()
 const tagViews= computed<RouteRecordRaw[]>(() => store.getters.tagViews)
 
 const activeView = ref()
@@ -54,6 +55,7 @@ const closeSelectedTag = async (route:RouteRecordRaw) => {
 
 const changeActiveItem = (tag: RouteRecordRaw) => {
 	activeView.value = tag
+  router.push({path: tag.path})
 }
 </script>
 

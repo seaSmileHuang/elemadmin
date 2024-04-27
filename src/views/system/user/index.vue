@@ -51,7 +51,7 @@
         </div>
 
         <!--表格渲染-->
-        <el-table v-loading="loading" :data="users" style="width: 100%;" @row-click="onTableRowClick">
+        <el-table :key="users" v-loading="loading" :data="users" style="width: 100%;" @row-click="onTableRowClick">
           <el-table-column type="selection" width="55" />
           <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名" />
           <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />
@@ -143,6 +143,7 @@ const query = ref<IQueyUsersListParams>({
 })
 const defaultProps = {
   label: "name",
+  isLeaf:"isLeaf"
 }
 
 const deptIdChange = (deptId?: string | number) => {
@@ -234,10 +235,11 @@ const getDeptDatas = (node: Node, resolve: (data: IDeptItem[]) => void) => {
   } else {
     pid = node.key
   }
+  if (node.isLeaf) return resolve([])
 	asyncify(() => DeptApi.getDepts({
     pid
   }))().then((res) => {
-    resolve(res)
+    resolve((res || []).map((dept: IDeptItem) => ({...dept, isLeaf: !dept.subCount})))
   })
 }
 const searchDept = async (name?: string) => {

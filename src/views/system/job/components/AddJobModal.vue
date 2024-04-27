@@ -5,6 +5,7 @@
     :model-value="$props.visible"
     :title="title"
     width="500px"
+    @close="emits('update:visible', false)"
   >
     <el-form
       ref="formRef"

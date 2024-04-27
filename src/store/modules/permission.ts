@@ -22,7 +22,7 @@ const permission = {
 		}
 	},
 	actions: {
-		getRoutes: async ({commit}: {commit: Commit}) => {
+		setRoutes: async ({commit}: {commit: Commit}) => {
 			const res = await asyncify(() => MenuApi.getUserMenus())()
 			// const routes = [
 			// 	{
@@ -64,6 +64,7 @@ const permission = {
 				path: "/:pathMatch(.*)",
 				redirect: "/404"
 			  }))
+			
 		},
 	}
 }

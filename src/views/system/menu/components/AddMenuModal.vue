@@ -1,6 +1,6 @@
 <template>
 	  <!--表单渲染-->
-		<el-dialog append-to-body :close-on-click-modal="false" :model-value="true" :title="title" width="580px">
+		<el-dialog append-to-body :close-on-click-modal="false" :model-value="true" :title="title" width="580px" @close="emits('update:visible', false)">
       <el-form ref="formRef" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="form.type" size="mini" style="width: 178px">

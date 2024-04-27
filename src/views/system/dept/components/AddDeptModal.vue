@@ -1,5 +1,5 @@
 <template>
-    <el-dialog append-to-body :close-on-click-modal="false" :model-value="true" :title="title" width="500px">
+    <el-dialog append-to-body :close-on-click-modal="false" :model-value="true" :title="title" width="500px" @close="emits('update:visible', false)">
       <el-form ref="formRef" inline :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="部门名称" prop="name">
           <el-input v-model="form.name" style="width: 370px;" />

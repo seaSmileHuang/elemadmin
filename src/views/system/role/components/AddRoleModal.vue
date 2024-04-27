@@ -1,6 +1,6 @@
 <template>
 	    <!-- 表单渲染 -->
-		<el-dialog append-to-body :close-on-click-modal="false" :model-value="props.visible" title="新增角色" width="520px">
+		<el-dialog append-to-body :close-on-click-modal="false" :model-value="props.visible" title="新增角色" width="520px" @close="emits('update:visible', false)">
       <el-form ref="formRef" :inline="true" :model="form" size="small" label-width="80px">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="form.name" style="width: 380px;" />

@@ -37,7 +37,7 @@ router.beforeEach(async (to,from,next) => {
         next()
       } else {
         await store.dispatch("GetUserInfo")
-        await store.dispatch("getRoutes")
+        await store.dispatch("setRoutes")
         /** 添加动态路由 */
         console.log("store.getters.routers", store.getters.routes)
 

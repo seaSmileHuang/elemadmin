@@ -1,8 +1,8 @@
 import store from "@/store";
 import { addRoutes } from "@/store/modules/permission";
 import { getToken } from "@/utils/getToken";
-import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
 import Layout from "@/views/Layout/index.vue";
+import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },
   {path: "/home", name: "home", component: Layout, meta: {
@@ -11,6 +11,15 @@ const routes: Array<RouteRecordRaw> = [
     {
       path: "/",
       component: () => import("@/views/home.vue"),
+    }
+  ]
+},
+  {path: "/user/center", name: "userCenter", component: Layout, meta: {
+    title: "个人中心"
+  }, children: [
+    {
+      path: "/",
+      component: () => import("@/views/system/user/center/index.vue"),
     }
   ]
 },

@@ -33,6 +33,36 @@ export type IUserInfoItem = {
 	roles: string[];
 	user: IUserItem
 }
+
+export type IUpdatePassword = {
+	oldPassword: string;
+	newPassword: string;
+}
+
+export type IUpdateEmail = {
+	email:string;
+	code: string;
+	password:string
+}
+
+export type IOperationLogItem = {
+	address?: string;
+	browser?: string;
+	createTime?: string;
+	description?: string;
+	requestIp?: string;
+	time?: number;
+}
+
+export type IOperationLogList = {
+	records: IOperationLogItem[];
+	total: number;
+}
+
+type IQueryLogsParams = {
+	pageNum: number;
+	pageSize: number;
+}
 export default {
 	getUsers(params?: IQueyUsersListParams) {
 		return axios.get<ResponseRecord<IUserListDTO>>("/api/user/list", {
@@ -65,4 +95,21 @@ export default {
 
 		})
 	},
+	updatePassword(data: IUpdatePassword) {
+		return axios.post("/api/user/updatePassword", data)
+	},
+	updateAvatar(data: FormData) {
+		return axios.post("/api/user/updateAvatar", data, {
+			headers: {
+				"Content-Type": "multipart/form-data"
+			}
+		})
+	},
+	updateEmail(data: IUpdateEmail) {
+		return axios.post("/api/users/updateEmail", data)
+	},
+	getUserLogs(params: IQueryLogsParams) {
+		return axios.get<ResponseRecord<IOperationLogList>>("/api/logs/user", {params})
+	}
+
 }

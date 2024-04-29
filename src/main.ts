@@ -1,16 +1,18 @@
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
+// import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'virtual:svg-icons-register'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from "./router"
 import store from "./store"
-import './style.css'
 
 // global css
+import "@/assets/styles/element/index.scss"
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import './assets/styles/index.scss'
+import './style.css'
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -21,7 +23,7 @@ app.use(ElementPlus, {
 })
 app.use(router)
 app.use(store)
-app.use(ElementPlus)
+// app.use(ElementPlus)
 app.mount('#app')
 
 app.directive("permission", {

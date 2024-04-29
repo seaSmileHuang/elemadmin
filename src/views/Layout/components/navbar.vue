@@ -30,7 +30,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <span style="display:block;" >
-              <el-dropdown-item>
+              <el-dropdown-item @click="toggleDark()">
                 布局设置
               </el-dropdown-item>
             </span>
@@ -64,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import { useDark, useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -74,6 +75,8 @@ const store = useStore()
 const router = useRouter()
 const opened = computed(() => store.getters.sidebar.opened)
 
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
 const toggleSideBar = () => {
   store.dispatch("toggleSidebar")
 }
